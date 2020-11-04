@@ -1,0 +1,28 @@
+﻿10
+10
+955555555C
+A        A
+A        A
+A        A
+A   0    A
+A        A
+A        A
+A  0     A
+A        A
+3555555556
+
+Header:
+levelWidth: 10
+levelHeight: 10
+
+Body:
+955555555C
+A        A
+A        A
+A        A
+A   0    A
+A        A
+A        A
+A  0     A
+A        A
+3555555556
