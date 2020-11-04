@@ -24,7 +24,7 @@ namespace PacMan
             {
                 for (int x = 0; x < columns; x++)
                 {
-                    tileMap[x, y] = new Tile(null, new Vector2(x * 32, y * 32), 32);
+                    tileMap[x, y] = new Tile(' ', null, new Vector2(x * 32, y * 32), 32);
                 }
             }
         }
