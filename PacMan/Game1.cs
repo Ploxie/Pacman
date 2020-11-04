@@ -13,7 +13,10 @@ namespace PacMan
         private Texture2D tilesetTexture;
 
         private Editor editor;
-        
+        private InGameState game;
+
+        private GameState gameState;
+
         public static Vector2 Scale = new Vector2(1.5f, 1.5f);
 
         public Game1()
@@ -33,12 +36,18 @@ namespace PacMan
             
 
             spritesheetTexture = Content.Load<Texture2D>("SpriteSheet");
-            tilesetTexture = Content.Load<Texture2D>("Tileset");
+            tilesetTexture = Content.Load<Texture2D>("Tileset2");
 
             //level = new Level(new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32,32), 1));
             //level.LoadLevel("Content\\Level1.txt");
-                       
-            editor = new Editor(new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32, 32), 1), Window);
+
+            SpriteSheet pacmanSheet = new SpriteSheet(spritesheetTexture, Vector2.Zero, new Vector2(16, 16), new Vector2(16, 16));
+
+            SpriteSheet tilesetSheet = new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32, 32), 1);
+
+            game = new InGameState(tilesetSheet, pacmanSheet);
+                                   
+            editor = new Editor(tilesetSheet, Window);
             editor.GridTexture = CreateRectangleTexture(32, 32, new Color(128, 128, 128, 128));
             editor.HighlightTexture = CreateFilledTexture(32, 32, new Color(128,128,128,128));
             editor.SelectedTexture = CreateFilledTexture(32, 32, new Color(255, 0, 0, 64));
@@ -48,6 +57,8 @@ namespace PacMan
             graphics.PreferredBackBufferWidth = level.PixelWidth + editor.PaletteWidth;
             graphics.PreferredBackBufferHeight = level.PixelHeight;
             graphics.ApplyChanges();
+
+            gameState = editor;
         }
 
         private Texture2D CreateRectangleTexture(int width, int height, Color lineColor)
@@ -127,11 +138,20 @@ namespace PacMan
                 graphics.ApplyChanges();
             }
 
+            if (Keyboard.GetState().IsKeyDown(Keys.F12))
+            {
+                if(gameState == game)
+                {
+                    gameState = editor;
+                }
+                else
+                {
+                    gameState = game;
+                }
+            }
 
 
-            
-
-            editor.Update(gameTime);
+            gameState.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -141,8 +161,7 @@ namespace PacMan
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
-            //level.Draw(spriteBatch);
-            editor.Draw(spriteBatch);
+            gameState.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

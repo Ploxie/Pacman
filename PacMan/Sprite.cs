@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PacMan
 {
-    class Sprite
+    public class Sprite
     {
         private Texture2D texture;
         

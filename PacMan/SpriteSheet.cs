@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PacMan
 {
-    class SpriteSheet
+    public class SpriteSheet
     {
         private Vector2 start;
         private Vector2 spriteSize;

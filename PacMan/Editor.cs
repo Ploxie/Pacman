@@ -8,7 +8,7 @@ using System.Text;
 
 namespace PacMan
 {
-    class Editor
+    public class Editor : GameState
     {
         private SpriteSheet spritesheet;
         private GameWindow window;

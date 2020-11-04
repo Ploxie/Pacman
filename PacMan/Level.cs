@@ -9,7 +9,7 @@ using System.Text;
 namespace PacMan
 {
     
-    class Level
+    public class Level
     {
 
         private Tile[,] tileMap;
@@ -31,6 +31,7 @@ namespace PacMan
                     tileMap[x, y] = new Tile(Tile.EMPTY_TYPE, null, new Vector2(x * 32, y * 32) * Game1.Scale, (int)(32 * Game1.Scale.X));
                 }
             }
+
 
             width = columns;
             height = rows;

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PacMan
 {
-    class Tile
+    public class Tile
     {
         public static readonly char EMPTY_TYPE = '-';
 
