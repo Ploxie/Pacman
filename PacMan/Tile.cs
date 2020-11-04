@@ -93,6 +93,7 @@ namespace PacMan
         public char Type
         {
             get { return type; }
+            set { this.type = value; }
         }
 
         public Sprite Sprite
