@@ -7,6 +7,8 @@ namespace PacMan
 {
     class Tile
     {
+        public static readonly char EMPTY_TYPE = '-';
+
         private Sprite sprite;
         private Vector2 position;
         private int size;
@@ -21,6 +23,7 @@ namespace PacMan
             this.size = size;
 
             this.collisionData = GetCollisionData(type);
+
         }
         
         public static byte GetCollisionData(char c)

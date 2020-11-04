@@ -13,14 +13,13 @@ namespace PacMan
     {
 
         private Tile[,] tileMap;
-        private SpriteSheet spritesheet;
         private int width, height;
         
         public Level()
         {
 
         }
-
+        
         public Level(int columns, int rows)
         {
             this.tileMap = new Tile[columns, rows];
@@ -29,7 +28,7 @@ namespace PacMan
             {
                 for (int x = 0; x < columns; x++)
                 {
-                    tileMap[x, y] = new Tile('-', null, new Vector2(x * 32, y * 32) * Game1.Scale, (int)(32 * Game1.Scale.X));
+                    tileMap[x, y] = new Tile(Tile.EMPTY_TYPE, null, new Vector2(x * 32, y * 32) * Game1.Scale, (int)(32 * Game1.Scale.X));
                 }
             }
 
@@ -151,5 +150,6 @@ namespace PacMan
                 tile.Sprite.Draw(spriteBatch, tile.Position, Game1.Scale, SpriteEffects.None, Color.White);
             }
         }
+               
     }
 }

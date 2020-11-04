@@ -60,6 +60,16 @@ namespace PacMan
             set;
         }
 
+        public int PaletteWidth
+        {
+            get { return (int)(palette.GetLength(0) * 32 * Game1.Scale.X); }
+        }
+
+        public int PaletteHeight
+        {
+            get { return (int)(palette.GetLength(1) * 32 * Game1.Scale.Y); }
+        }
+
         public void CreateNewLevel(string filePath, int columns, int rows)
         {
             Level level = new Level(columns, rows);
@@ -67,12 +77,13 @@ namespace PacMan
             this.currentLevel = level;
         }
 
-        public void LoadLevel(string filePath)
+        public Level LoadLevel(string filePath)
         {
             Level level = new Level();
             level.LoadLevel(spritesheet, filePath);
             this.palettePosition = new Vector2(this.levelPosition.X + level.PixelWidth, 0);
-            this.currentLevel = level;        
+            this.currentLevel = level;
+            return currentLevel;
         }
 
         public void SaveLevel(string filePath)
@@ -122,6 +133,11 @@ namespace PacMan
                     {
                         tile.Sprite = selectedPalette.Sprite;
                         tile.Type = selectedPalette.Type;
+                    }
+                    else if (Mouse.GetState().RightButton == ButtonState.Pressed)
+                    {
+                        tile.Sprite = null;
+                        tile.Type = Tile.EMPTY_TYPE;
                     }
                 }
             }

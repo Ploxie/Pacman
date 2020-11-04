@@ -12,7 +12,6 @@ namespace PacMan
         private Texture2D spritesheetTexture;
         private Texture2D tilesetTexture;
 
-        private Level level;
         private Editor editor;
         
         public static Vector2 Scale = new Vector2(1.5f, 1.5f);
@@ -31,29 +30,24 @@ namespace PacMan
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            graphics.PreferredBackBufferWidth = (int)((16 * 32 * Game1.Scale.X) + (32 * 4 * Game1.Scale.X));
-            graphics.PreferredBackBufferHeight = (int)(16 * 32 * Game1.Scale.Y);
-            graphics.ApplyChanges();
+            
 
             spritesheetTexture = Content.Load<Texture2D>("SpriteSheet");
             tilesetTexture = Content.Load<Texture2D>("Tileset");
 
             //level = new Level(new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32,32), 1));
             //level.LoadLevel("Content\\Level1.txt");
-
-            Texture2D pixelTexture = new Texture2D(GraphicsDevice, 3,3);
-            Color pixelColor = Color.White;
-            Color[] pixelColors = new Color[9] { Color.Black, Color.Black, Color.Black, Color.Black, Color.White, Color.Black, Color.Black, Color.Black, Color.Black };
-            //pixelTexture.SetData(new Color[]{pixelColor});
-            pixelTexture.SetData(pixelColors);
-
-
+                       
             editor = new Editor(new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32, 32), 1), Window);
             editor.GridTexture = CreateRectangleTexture(32, 32, new Color(128, 128, 128, 128));
             editor.HighlightTexture = CreateFilledTexture(32, 32, new Color(128,128,128,128));
             editor.SelectedTexture = CreateFilledTexture(32, 32, new Color(255, 0, 0, 64));
             //editor.CreateNewLevel("Content\\TestLevel.txt", 16, 16);
-            editor.LoadLevel("Content\\TestLevel.txt");            
+            Level level = editor.LoadLevel("Content\\TestLevel.txt");
+
+            graphics.PreferredBackBufferWidth = level.PixelWidth + editor.PaletteWidth;
+            graphics.PreferredBackBufferHeight = level.PixelHeight;
+            graphics.ApplyChanges();
         }
 
         private Texture2D CreateRectangleTexture(int width, int height, Color lineColor)
@@ -114,6 +108,28 @@ namespace PacMan
             {
                 editor.SaveLevel("Content\\TestLevel.txt");
             }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.F2))
+            {
+                Level level = editor.LoadLevel("Content\\Level1.txt");
+
+                graphics.PreferredBackBufferWidth = level.PixelWidth + editor.PaletteWidth;
+                graphics.PreferredBackBufferHeight = level.PixelHeight;
+                graphics.ApplyChanges();
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.F3))
+            {
+                Level level = editor.LoadLevel("Content\\TestLevel.txt");
+
+                graphics.PreferredBackBufferWidth = level.PixelWidth + editor.PaletteWidth;
+                graphics.PreferredBackBufferHeight = level.PixelHeight;
+                graphics.ApplyChanges();
+            }
+
+
+
+            
 
             editor.Update(gameTime);
 
