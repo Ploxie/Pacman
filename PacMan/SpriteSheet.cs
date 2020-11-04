@@ -21,6 +21,7 @@ namespace PacMan
             this.Texture = texture;
             this.start = Vector2.Zero;
             this.spriteSize = new Vector2(texture.Width, texture.Height);
+            this.internalSprite = new Sprite(texture, start, spriteSize);
         }
 
         public SpriteSheet(Texture2D texture, Vector2 start, Vector2 dimensions, Vector2 spriteSize, int offset = 0)

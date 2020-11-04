@@ -13,15 +13,17 @@ namespace PacMan
     {
 
         private Tile[,] tileMap;
+        private SpriteSheet tileSheet;
         private int width, height;
         
-        public Level()
+        public Level(SpriteSheet spritesheet)
         {
-
+            this.tileSheet = spritesheet;
         }
         
-        public Level(int columns, int rows)
+        public Level(SpriteSheet spritesheet, int columns, int rows)
         {
+            this.tileSheet = spritesheet;
             this.tileMap = new Tile[columns, rows];
 
             for (int y = 0; y < rows; y++)
@@ -62,7 +64,7 @@ namespace PacMan
             get { return (int)(Height * 32 * Game1.Scale.Y); } 
         }
 
-        public void LoadLevel(SpriteSheet spritesheet, string filePath)
+        public void LoadLevel(string filePath)
         {
             StreamReader reader = new StreamReader(filePath);
             int x = 0;
@@ -79,69 +81,128 @@ namespace PacMan
                 x = 0;
                 foreach (char c in currentLine)
                 {
-                    switch (c)
-                    {
-                        case '-':
-                            tileMap[x, y] = new Tile(c, null, new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case '0':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(0, 0), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case '1':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(1, 0), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case '2':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(2, 0), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case '3':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(3, 0), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case '4':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(0, 1), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case '5':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(1, 1), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case '6':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(2, 1), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case '7':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(3, 1), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case '8':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(0, 2), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case '9':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(1, 2), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case 'A':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(2, 2), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case 'B':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(3, 2), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case 'C':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(0, 3), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case 'D':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(1, 3), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case 'E':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(2, 3), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        case 'F':
-                            tileMap[x, y] = new Tile(c, spritesheet.GetAt(3, 3), new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                        default:
-                            tileMap[x, y] = new Tile(c, null, new Vector2(x, y) * tileSize, tileSize);
-                            break;
-                    }
-
+                    tileMap[x, y] = new Tile(c, null, new Vector2(x, y) * tileSize, tileSize);
                     x++;
                 }
                 y++;
             }
             reader.Close();
+
+            CalculateSprites();
+        }
+
+        public void CalculateSprites()
+        {
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    bool leftBlocked = true;
+                    bool rightBlocked = true;
+                    bool topBlocked = true;
+                    bool bottomBlocked = true;
+
+                    if(tileMap[x, y].Type == '0')
+                    {
+                        tileMap[x, y].Sprite = Tile.NULL_SPRITE;
+                        continue;
+                    }
+
+                    if (x - 1 >= 0 && tileMap[x - 1, y].Type == '1')
+                    {
+                        leftBlocked = false;
+                    }
+
+                    if (x + 1 < width && tileMap[x + 1, y].Type == '1')
+                    {
+                        rightBlocked = false;
+                    }
+
+                    if (y - 1 >= 0 && tileMap[x, y - 1].Type == '1')
+                    {
+                        topBlocked = false;
+                    }
+
+                    if (y + 1 < height && tileMap[x, y + 1].Type == '1')
+                    {
+                        bottomBlocked = false;
+                    }
+
+                    if(leftBlocked && rightBlocked && topBlocked && bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(0, 0);
+                    }
+                    if (!leftBlocked && rightBlocked && topBlocked && bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(0, 1);
+                    }
+                    if (leftBlocked && !rightBlocked && topBlocked && bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(1, 0);
+                    }
+                    if (leftBlocked && rightBlocked && !topBlocked && bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(2, 0);
+                    }
+                    if (leftBlocked && rightBlocked && topBlocked && !bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(0, 2);
+                    }
+
+                    if (!leftBlocked && !rightBlocked && topBlocked && bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(1, 1);
+                    }
+                    if (leftBlocked && rightBlocked && !topBlocked && !bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(2, 2);
+                    }
+
+                    if (!leftBlocked && rightBlocked && !topBlocked && bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(2, 1);
+                    }
+
+                    if (leftBlocked && !rightBlocked && topBlocked && !bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(1, 2);
+                    }
+
+                    if (!leftBlocked && rightBlocked && topBlocked && !bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(0, 3);
+                    }
+
+                    if (leftBlocked && !rightBlocked && !topBlocked && bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(3, 0);
+                    }
+
+                    if (!leftBlocked && !rightBlocked && !topBlocked && !bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(3, 3);
+                    }
+
+                    if (!leftBlocked && !rightBlocked && !topBlocked && bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(3, 1);
+                    }
+
+                    if (!leftBlocked && !rightBlocked && topBlocked && !bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(1, 3);
+                    }
+
+                    if (leftBlocked && !rightBlocked && !topBlocked && !bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(3, 2);
+                    }
+                    if (!leftBlocked && rightBlocked && !topBlocked && !bottomBlocked)
+                    {
+                        tileMap[x, y].Sprite = tileSheet.GetAt(2, 3);
+                    }
+                }
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)

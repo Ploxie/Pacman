@@ -70,17 +70,19 @@ namespace PacMan
             get { return (int)(palette.GetLength(1) * 32 * Game1.Scale.Y); }
         }
 
-        public void CreateNewLevel(string filePath, int columns, int rows)
+        public Level CreateNewLevel(string filePath, int columns, int rows)
         {
-            Level level = new Level(columns, rows);
+            Level level = new Level(spritesheet, columns, rows);
             this.palettePosition = new Vector2(level.PixelWidth, 0);
             this.currentLevel = level;
+
+            return currentLevel;
         }
 
         public Level LoadLevel(string filePath)
         {
-            Level level = new Level();
-            level.LoadLevel(spritesheet, filePath);
+            Level level = new Level(spritesheet);
+            level.LoadLevel(filePath);
             this.palettePosition = new Vector2(this.levelPosition.X + level.PixelWidth, 0);
             this.currentLevel = level;
             return currentLevel;
@@ -129,25 +131,31 @@ namespace PacMan
                 if (tile.Bounds.Contains(mousePoint))
                 {
                     hoveredTile = tile;
+
+
+
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
                         tile.Sprite = selectedPalette.Sprite;
-                        tile.Type = selectedPalette.Type;
+                        tile.Type = '1';
+                        currentLevel.CalculateSprites();
                     }
                     else if (Mouse.GetState().RightButton == ButtonState.Pressed)
                     {
-                        tile.Sprite = null;
+                        tile.Sprite = Tile.NULL_SPRITE;
                         tile.Type = Tile.EMPTY_TYPE;
+                        currentLevel.CalculateSprites();
                     }
                 }
             }
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach(Tile tile in currentLevel.TileMap)
             {
-                spriteBatch.Draw(GridTexture, levelPosition + tile.Position, null, Color.White, 0f, Vector2.Zero, Game1.Scale, SpriteEffects.None, 1.0f);
+                //spriteBatch.Draw(GridTexture, levelPosition + tile.Position, null, Color.White, 0f, Vector2.Zero, Game1.Scale, SpriteEffects.None, 1.0f);
 
                 if(hoveredTile == tile)
                 {

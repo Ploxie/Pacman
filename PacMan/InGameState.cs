@@ -24,8 +24,8 @@ namespace PacMan
 
         public void SetLevel(string filePath)
         {
-            Level level = new Level();
-            level.LoadLevel(tilesheet, filePath);
+            Level level = new Level(tilesheet);
+            level.LoadLevel(filePath);
         }
 
         public void Update(GameTime gameTime)

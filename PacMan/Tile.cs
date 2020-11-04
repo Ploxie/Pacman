@@ -7,7 +7,8 @@ namespace PacMan
 {
     public class Tile
     {
-        public static readonly char EMPTY_TYPE = '-';
+        public static readonly char EMPTY_TYPE = '0';
+        public static Sprite NULL_SPRITE;
 
         private Sprite sprite;
         private Vector2 position;
