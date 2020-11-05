@@ -53,17 +53,17 @@ namespace PacMan
 
             SpriteSheet tilesetSheet = new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32, 32), 1);
 
+            Level level = Level.LoadLevel(tilesetSheet, "Content\\TestLevel.txt");
+
             game = new InGameState(tilesetSheet, pacmanSheet);
+            game.SetLevel(level);
                                    
             editor = new Editor(tilesetSheet, Window);
+            editor.SetLevel(level);
             editor.GridTexture = CreateRectangleTexture(32, 32, new Color(128, 128, 128, 128));
             editor.HighlightTexture = CreateFilledTexture(32, 32, new Color(128,128,128,128));
             editor.SelectedTexture = CreateFilledTexture(32, 32, new Color(255, 0, 0, 64));
-            //editor.CreateNewLevel("Content\\TestLevel.txt", 16, 16);
-            //Level level = editor.LoadLevel("Content\\TestLevel.txt");
-            Level level = editor.LoadLevel("Content\\TestLevel.txt");
-
-            
+                       
 
             gameState = editor;
         }
@@ -127,23 +127,6 @@ namespace PacMan
                 editor.SaveLevel("Content\\TestLevel2.txt");
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.F2))
-            {
-                Level level = editor.LoadLevel("Content\\Level1.txt");
-
-                graphics.PreferredBackBufferWidth = level.PixelWidth;
-                graphics.PreferredBackBufferHeight = level.PixelHeight;
-                graphics.ApplyChanges();
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.F3))
-            {
-                Level level = editor.LoadLevel("Content\\TestLevel.txt");
-
-                graphics.PreferredBackBufferWidth = level.PixelWidth;
-                graphics.PreferredBackBufferHeight = level.PixelHeight;
-                graphics.ApplyChanges();
-            }
 
             if (Keyboard.GetState().IsKeyDown(Keys.F12))
             {

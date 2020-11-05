@@ -42,22 +42,19 @@ namespace PacMan
             set;
         }
         
-        public Level CreateNewLevel(string filePath, int columns, int rows)
+        public Level CreateNewLevel(string filePath, int columns, int rows, int tileSize)
         {
-            Level level = new Level(spritesheet, columns, rows);
+            Level level = Level.CreateLevel(spritesheet, columns, rows, tileSize);
             this.levelPosition = new Vector2((window.ClientBounds.Width / 2) - (level.PixelWidth / 2), (window.ClientBounds.Height / 2) - (level.PixelHeight / 2));
             this.currentLevel = level;
 
             return currentLevel;
         }
 
-        public Level LoadLevel(string filePath)
+        public void SetLevel(Level level)
         {
-            Level level = new Level(spritesheet);
-            level.LoadLevel(filePath);
             this.levelPosition = new Vector2((window.ClientBounds.Width / 2) - (level.PixelWidth / 2), (window.ClientBounds.Height / 2) - (level.PixelHeight / 2));
             this.currentLevel = level;
-            return currentLevel;
         }
 
         public void SaveLevel(string filePath)
@@ -66,6 +63,7 @@ namespace PacMan
 
             writer.WriteLine(currentLevel.Width);
             writer.WriteLine(currentLevel.Height);
+            writer.WriteLine(currentLevel.TileSize);
 
             for (int y = 0; y < currentLevel.Height; y++)
             {

@@ -15,14 +15,11 @@ namespace PacMan
         private Tile[,] tileMap;
         private SpriteSheet tileSheet;
         private int width, height;
-        
-        public Level(SpriteSheet spritesheet)
+        private int tileSize;
+
+        private Level(SpriteSheet spritesheet, int columns, int rows, int tileSize)
         {
-            this.tileSheet = spritesheet;
-        }
-        
-        public Level(SpriteSheet spritesheet, int columns, int rows)
-        {
+            this.tileSize = tileSize;
             this.tileSheet = spritesheet;
             this.tileMap = new Tile[columns, rows];
 
@@ -30,7 +27,7 @@ namespace PacMan
             {
                 for (int x = 0; x < columns; x++)
                 {
-                    tileMap[x, y] = new Tile(false, null, new Vector2(x * 32, y * 32) * Game1.Scale, (int)(32 * Game1.Scale.X));
+                    tileMap[x, y] = new Tile(false, null, new Vector2(x * tileSize, y * tileSize) * Game1.Scale, (int)(tileSize * Game1.Scale.X));
                 }
             }
 
@@ -54,41 +51,56 @@ namespace PacMan
             get { return height; }
         }
 
+        public int TileSize
+        {
+            get { return tileSize; }
+        }
+
         public int PixelWidth
         {
-            get { return (int)(Width * 32 * Game1.Scale.X); } 
+            get { return (int)(Width * tileSize * Game1.Scale.X); } 
         }
 
         public int PixelHeight
         {
-            get { return (int)(Height * 32 * Game1.Scale.Y); } 
+            get { return (int)(Height * tileSize * Game1.Scale.Y); } 
         }
 
-        public void LoadLevel(string filePath)
+        public static Level CreateLevel(SpriteSheet spritesheet, int width, int height, int tileSize)
         {
+            return new Level(spritesheet, width, height, tileSize);
+        }
+
+        public static Level LoadLevel(SpriteSheet spritesheet, string filePath)
+        {
+
             StreamReader reader = new StreamReader(filePath);
             int x = 0;
             int y = 0;
-            width = int.Parse(reader.ReadLine());
-            height = int.Parse(reader.ReadLine());
-            tileMap = new Tile[width, height];
+            int width = int.Parse(reader.ReadLine());
+            int height = int.Parse(reader.ReadLine());
+            int tileSize = int.Parse(reader.ReadLine());
 
-            int tileSize = (int)(32 * Game1.Scale.X);
+            Level level = new Level(spritesheet, width, height, tileSize);
 
+            level.tileMap = new Tile[width, height];
+            
             string currentLine;
             while ((currentLine = reader.ReadLine()) != null && y < height)
             {
                 x = 0;
                 foreach (char c in currentLine)
                 {
-                    tileMap[x, y] = new Tile(c == '0', null, new Vector2(x, y) * tileSize, tileSize);
+                    level.tileMap[x, y] = new Tile(c == '0', null, new Vector2(x, y) * tileSize, tileSize);
                     x++;
                 }
                 y++;
             }
             reader.Close();
 
-            CalculateSprites();
+            level.CalculateSprites();
+
+            return level;
         }
 
         public void CalculateSprites()
@@ -205,18 +217,21 @@ namespace PacMan
             }
         }
 
-        public Tile GetAt(int x, int y)
+        public Tile GetAt(float x, float y)
         {
-            if(x < 0 || x >= width || y < 0 || y >= height)
+            int xIndex = (int)(x / (tileSize * Game1.Scale.X));
+            int yIndex = (int)(y / (tileSize * Game1.Scale.Y));
+
+            if (xIndex < 0 || xIndex >= width || yIndex < 0 || yIndex >= height)
             {
                 return null;
             }
-            return tileMap[x, y];
+            return tileMap[xIndex, yIndex];
         }
 
         public Tile GetAt(Vector2 position)
         {
-            return GetAt((int)position.X, (int)position.Y);
+            return GetAt(position.X, position.Y);
         }
 
         public void Draw(SpriteBatch spriteBatch)

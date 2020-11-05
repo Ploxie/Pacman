@@ -26,7 +26,7 @@ namespace PacMan
         public Vector2 Position
         {
             get { return position; }
-            private set { this.position = value; }
+            set { this.position = value; }
         }
 
         public Vector2 Destination

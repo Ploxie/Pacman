@@ -20,13 +20,12 @@ namespace PacMan
             this.characterSheet = characterSheet;            
         }
 
-        public void SetLevel(string filePath)
+        public void SetLevel(Level level)
         {
-            Level level = new Level(tilesheet);
-            level.LoadLevel(filePath);
             currentLevel = level;
 
             pacman = new Pacman(characterSheet, level, 5);
+            pacman.Position = level.GetAt(1, 1).Position;
         }
 
         public void Update(GameTime gameTime)
