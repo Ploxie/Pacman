@@ -8,7 +8,6 @@ namespace PacMan
 {
     public interface GameState
     {
-
         public void Update(GameTime gameTime);
 
         public void Draw(SpriteBatch spriteBatch);

@@ -31,9 +31,15 @@ namespace PacMan
         protected override void LoadContent()
         {
 
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            //TODO:
+            // Fråga lärare om Manager/Handler
+            // 
 
-            
+            graphics.PreferredBackBufferWidth = 768;
+            graphics.PreferredBackBufferHeight = 768;
+            graphics.ApplyChanges();
+
+            spriteBatch = new SpriteBatch(GraphicsDevice);            
 
             spritesheetTexture = Content.Load<Texture2D>("SpriteSheet");
             tilesetTexture = Content.Load<Texture2D>("Tileset");
@@ -55,11 +61,9 @@ namespace PacMan
             editor.SelectedTexture = CreateFilledTexture(32, 32, new Color(255, 0, 0, 64));
             //editor.CreateNewLevel("Content\\TestLevel.txt", 16, 16);
             //Level level = editor.LoadLevel("Content\\TestLevel.txt");
-            Level level = editor.CreateNewLevel("Content\\TestLevel2.txt", 24,24);
+            Level level = editor.LoadLevel("Content\\TestLevel.txt");
 
-            graphics.PreferredBackBufferWidth = level.PixelWidth + editor.PaletteWidth;
-            graphics.PreferredBackBufferHeight = level.PixelHeight;
-            graphics.ApplyChanges();
+            
 
             gameState = editor;
         }
@@ -127,7 +131,7 @@ namespace PacMan
             {
                 Level level = editor.LoadLevel("Content\\Level1.txt");
 
-                graphics.PreferredBackBufferWidth = level.PixelWidth + editor.PaletteWidth;
+                graphics.PreferredBackBufferWidth = level.PixelWidth;
                 graphics.PreferredBackBufferHeight = level.PixelHeight;
                 graphics.ApplyChanges();
             }
@@ -136,7 +140,7 @@ namespace PacMan
             {
                 Level level = editor.LoadLevel("Content\\TestLevel.txt");
 
-                graphics.PreferredBackBufferWidth = level.PixelWidth + editor.PaletteWidth;
+                graphics.PreferredBackBufferWidth = level.PixelWidth;
                 graphics.PreferredBackBufferHeight = level.PixelHeight;
                 graphics.ApplyChanges();
             }

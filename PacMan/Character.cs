@@ -10,13 +10,17 @@ namespace PacMan
     {
 
         protected SpriteSheet spritesheet;
+        protected Level level;
 
         protected Vector2 position;
+        protected Vector2 destination;
         protected Vector2 direction;
+        protected float speed;
 
-        public Character(SpriteSheet spritesheet)
+        public Character(SpriteSheet spritesheet, Level level)
         {
             this.spritesheet = spritesheet;
+            this.level = level;
         }
 
         public Vector2 Position
@@ -25,11 +29,30 @@ namespace PacMan
             private set { this.position = value; }
         }
 
-        
+        public Vector2 Destination
+        {
+            get;
+        }
         
         public void ChangeDirection(Vector2 direction)
         {
-            this.direction = direction;
+            Vector2 newPosition = position + direction;
+
+            if (!level.GetAt(newPosition).Blocked)
+            {
+                this.destination = newPosition;                
+                this.direction = direction;
+            }
+        }
+        
+        protected void UpdateMovement(GameTime gameTime)
+        {
+            position += direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (Vector2.Distance(position, destination) < 1)
+            {
+                position = destination;
+            }
         }
 
         public abstract void Update(GameTime gameTime);

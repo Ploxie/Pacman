@@ -8,7 +8,7 @@ namespace PacMan
 {
     public class Pacman : Character
     {
-        public Pacman(SpriteSheet spritesheet, int lives) : base(spritesheet)
+        public Pacman(SpriteSheet spritesheet, Level level, int lives) : base(spritesheet, level)
         {
             Lives = lives;
         }
