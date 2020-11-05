@@ -17,6 +17,7 @@ namespace PacMan
         private HUD hud;
         private Level currentLevel;
         private Pacman pacman;
+        private Ghost ghost;
 
         private List<Powerup> powerups = new List<Powerup>();
 
@@ -39,6 +40,9 @@ namespace PacMan
 
             hud.Pacman = pacman;
             this.levelPosition = new Vector2((window.ClientBounds.Width / 2) - (level.PixelWidth / 2), (window.ClientBounds.Height / 2) - (level.PixelHeight / 2));
+
+            ghost = new Ghost(pacmanSheet, level, pacman, Ghost.AItype.Patrolling);
+            ghost.Position = level.GetTile(22, 22).Position + new Vector2(level.TileSize / 2);
         }
 
         private void PowerupCollision()
@@ -53,6 +57,10 @@ namespace PacMan
             {
                 pacman.Update(gameTime);
             }
+            if (ghost != null)
+            {
+                ghost.Update(gameTime);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -63,6 +71,10 @@ namespace PacMan
             if(pacman != null)
             {
                 pacman.Draw(spriteBatch, levelPosition);
+            }
+            if (ghost != null)
+            {
+                ghost.Draw(spriteBatch);
             }
         }        
     }
