@@ -16,6 +16,18 @@
 #begin Level1.txt
 /copy:Level1.txt
 
+#begin Level2.txt
+/copy:Level2.txt
+
+#begin Level3.txt
+/copy:Level3.txt
+
+#begin Level4.txt
+/copy:Level4.txt
+
+#begin Level5.txt
+/copy:Level5.txt
+
 #begin SpriteSheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
