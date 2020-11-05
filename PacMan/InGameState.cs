@@ -14,6 +14,8 @@ namespace PacMan
         private Level currentLevel;
         private Pacman pacman;
 
+        private List<Powerup> powerups = new List<Powerup>();
+
         public InGameState(SpriteSheet tilesheet, SpriteSheet characterSheet)
         {
             this.tilesheet = tilesheet;
@@ -26,6 +28,11 @@ namespace PacMan
 
             pacman = new Pacman(characterSheet, level, 5);
             pacman.Position = level.GetAt(1, 1).Position;
+        }
+
+        private void PowerupCollision()
+        {
+            //if pacman and powerup are on the same tile do something...
         }
 
         public void Update(GameTime gameTime)
