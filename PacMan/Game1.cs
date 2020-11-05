@@ -53,7 +53,7 @@ namespace PacMan
 
             SpriteSheet tilesetSheet = new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32, 32), 1);
 
-            Level level = Level.LoadLevel(tilesetSheet, "Content\\TestLevel.txt");
+            Level level = Level.LoadLevel(tilesetSheet, "Content\\Level1.txt");
 
             game = new InGameState(tilesetSheet, pacmanSheet);
             game.SetLevel(level);
@@ -124,7 +124,7 @@ namespace PacMan
 
             if(Keyboard.GetState().IsKeyDown(Keys.F1))
             {
-                editor.SaveLevel("Content\\TestLevel2.txt");
+                editor.SaveLevel("Content\\Level1.txt");
             }
 
 
