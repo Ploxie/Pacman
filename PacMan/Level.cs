@@ -260,15 +260,15 @@ namespace PacMan
             return GetAt(position.X, position.Y);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, Vector2 offset)
         {
             foreach(Tile tile in tileMap)
             {
-                tile.Sprite.Draw(spriteBatch, tile.Position, Game1.Scale, SpriteEffects.None, Color.White);
+                tile.Sprite.Draw(spriteBatch, offset + tile.Position, Game1.Scale, SpriteEffects.None, Color.White);
                 
                 if(tile.Powerup != null)
                 {
-                   tile.Powerup.Sprite.Draw(spriteBatch, tile.Position + new Vector2(TileSize / 2), Game1.Scale, new Vector2(0.5f));
+                   tile.Powerup.Sprite.Draw(spriteBatch, offset + tile.Position + new Vector2(TileSize / 2), Game1.Scale, new Vector2(0.5f));
                 }                
             }
         }

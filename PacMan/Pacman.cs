@@ -68,14 +68,14 @@ namespace PacMan
             
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, Vector2 offset)
         {
 
             float rotation = 0.0f;
             rotation = facing == Direction.Down ? (float)(Math.PI / 2) : rotation;
             rotation = facing == Direction.Left ? (float)(Math.PI / 2) * 2.0f : rotation;
             rotation = facing == Direction.Up ? (float)(Math.PI / 2) * 3.0f : rotation;
-            spritesheet.Sprite.Draw(spriteBatch, Position, Game1.Scale * 2, new Vector2(0.5f, 0.5f), rotation, SpriteEffects.None);
+            spritesheet.Sprite.Draw(spriteBatch, offset + Position, Game1.Scale * 2, new Vector2(0.5f, 0.5f), rotation, SpriteEffects.None);
         }
         
     }

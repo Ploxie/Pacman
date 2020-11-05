@@ -197,7 +197,7 @@ namespace PacMan
                     }                    
                 }
             }
-            currentLevel.Draw(spriteBatch);
+            currentLevel.Draw(spriteBatch, levelPosition);
         }
 
     }

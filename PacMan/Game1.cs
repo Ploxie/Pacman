@@ -17,45 +17,44 @@ namespace PacMan
 
         private GameState gameState;
 
-        public static Vector2 Scale = new Vector2(1.0f, 1.0f);
+        public static readonly Vector2 Scale = new Vector2(1.0f, 1.0f);
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-
-            
+            Content.RootDirectory = "Content";            
 
             IsMouseVisible = true;
         }
         protected override void LoadContent()
         {
-
-            //TODO:
-            // Fråga lärare om Manager/Handler
-            // 
+            int hudTop = 70;
+            int hudBot = 70;
 
             graphics.PreferredBackBufferWidth = 768;
-            graphics.PreferredBackBufferHeight = 768;
+            graphics.PreferredBackBufferHeight = 768 + hudTop + hudBot;
             graphics.ApplyChanges();
 
             spriteBatch = new SpriteBatch(GraphicsDevice);            
 
             spritesheetTexture = Content.Load<Texture2D>("SpriteSheet");
             tilesetTexture = Content.Load<Texture2D>("Tileset");
-
-            //level = new Level(new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32,32), 1));
-            //level.LoadLevel("Content\\Level1.txt");
-
+            Texture2D scoreTexture = Content.Load<Texture2D>("score-numbers");
+            
             Tile.NULL_SPRITE = new SpriteSheet(CreateFilledTexture(32, 32, new Color(0, 0, 64, 128))).Sprite;
 
             SpriteSheet spritesheet = new SpriteSheet(spritesheetTexture, Vector2.Zero, new Vector2(135,112), new Vector2(16, 16));
-
             SpriteSheet tilesheet = new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32, 32), 1);
 
             Level level = Level.LoadLevel(tilesheet, spritesheet, "Content\\Level1.txt");
 
-            game = new InGameState(tilesheet, spritesheet);
+            Texture2D pixelTexture = CreateFilledTexture(1, 1, Color.White);
+
+            Sprite lifeSprite = spritesheet.GetAt(1, 0);
+            HUD hud = new HUD(Window, hudTop, hudBot, scoreTexture, lifeSprite);
+
+
+            game = new InGameState(Window, hud, tilesheet, spritesheet);
             game.SetLevel(level);
                                    
             editor = new Editor(tilesheet,spritesheet, Window);
@@ -67,6 +66,8 @@ namespace PacMan
                        
 
             gameState = editor;
+
+            
         }
 
         private Texture2D CreateRectangleTexture(int width, int height, Color lineColor)
