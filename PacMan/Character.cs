@@ -9,7 +9,7 @@ namespace PacMan
     public abstract class Character
     {
 
-        protected enum Direction
+        protected enum FaceDirection
         {
             Up,
             Down,
@@ -25,7 +25,7 @@ namespace PacMan
         protected Vector2 direction;
         protected float speed;
 
-        protected Direction facing;
+        protected FaceDirection facing;
 
         protected double animationTimer;
         protected double timePerFrame = 200.0f;
@@ -35,7 +35,7 @@ namespace PacMan
             this.spritesheet = spritesheet;
             this.level = level;
             this.speed = 3.0f;
-            this.facing = Direction.Up;
+            this.facing = FaceDirection.Up;
         }
 
         public Vector2 Position
@@ -53,6 +53,11 @@ namespace PacMan
         {
             get;
         }
+
+        public Vector2 Direction
+        {
+            get { return direction; }
+        }
         
         public void ChangeDirection(Vector2 direction)
         {
@@ -67,19 +72,19 @@ namespace PacMan
 
                 if (direction.X > 0)
                 {
-                    this.facing = Direction.Right;
+                    this.facing = FaceDirection.Right;
                 }
                 else if (direction.X < 0)
                 {
-                    this.facing = Direction.Left;
+                    this.facing = FaceDirection.Left;
                 }
                 else if (direction.Y < 0)
                 {
-                    this.facing = Direction.Up;
+                    this.facing = FaceDirection.Up;
                 }
                 else if (direction.Y > 0)
                 {
-                    this.facing = Direction.Down;
+                    this.facing = FaceDirection.Down;
                 }
             }
         }

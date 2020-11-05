@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PacMan.GhostBehaviours;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PacMan
 {
-    class Ghost : Character
+    public class Ghost : Character
     {
         private Pacman pacman;
 
@@ -14,12 +15,15 @@ namespace PacMan
         private AItype type;
         float randomTimer;
 
+        private GhostBehaviour behaviour;
+
         public Ghost(SpriteSheet spriteSheet, Level level, Pacman pacman, AItype type) : base(spriteSheet, level) 
         { 
             this.pacman = pacman;
             direction = new Vector2(0, -1);
             this.type = type;
-        
+
+            behaviour = new GhostPathfinding(this, pacman, level);
         }
 
         public Vector2 PathFinding(Vector2 direction)
@@ -50,7 +54,7 @@ namespace PacMan
 
         public override void Update(GameTime gameTime)
         {
-            switch (type)
+            /*switch (type)
             {
                 case AItype.PathFinding:
                     ChangeDirection(PathFinding(direction));
@@ -97,8 +101,9 @@ namespace PacMan
                     break;
                 default:
                     break;
-            }
-            
+            }*/
+
+            ChangeDirection(behaviour.CalculateDirection());
 
             UpdateMovement(gameTime);
             UpdateAnimationTimer(gameTime);
