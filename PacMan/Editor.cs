@@ -10,16 +10,30 @@ namespace PacMan
 {
     public class Editor : GameState
     {
+        private enum BrushType
+        {
+            Block,
+            Food,
+            PowerupGhost,
+            PowerupWall,
+            PacmanSpawn,
+            GhostSpawn,
+        }
+
+        private SpriteSheet tilesheet;
         private SpriteSheet spritesheet;
         private GameWindow window;
 
         private Level currentLevel;
         private Tile hoveredTile;
+
+        private BrushType brushType = BrushType.Block;
         
         private Vector2 levelPosition;
 
-        public Editor(SpriteSheet spritesheet, GameWindow window)
+        public Editor(SpriteSheet tilesheet,SpriteSheet spritesheet, GameWindow window)
         {
+            this.tilesheet = tilesheet;
             this.spritesheet = spritesheet;
             this.window = window;     
         }
@@ -36,7 +50,7 @@ namespace PacMan
             set;
         }
 
-        public Texture2D SelectedTexture
+        public Sprite FoodSprite
         {
             get;
             set;
@@ -44,7 +58,7 @@ namespace PacMan
         
         public Level CreateNewLevel(string filePath, int columns, int rows, int tileSize)
         {
-            Level level = Level.CreateLevel(spritesheet, columns, rows, tileSize);
+            Level level = Level.CreateLevel(tilesheet,spritesheet, columns, rows, tileSize);
             this.levelPosition = new Vector2((window.ClientBounds.Width / 2) - (level.PixelWidth / 2), (window.ClientBounds.Height / 2) - (level.PixelHeight / 2));
             this.currentLevel = level;
 
@@ -69,7 +83,9 @@ namespace PacMan
             {
                 for (int x = 0; x < currentLevel.Width; x++)
                 {
-                    writer.Write(currentLevel.TileMap[x, y].Blocked ? '1' : '0');
+                    int value = currentLevel.TileMap[x, y].Blocked ? 1 : 0;
+                    value = currentLevel.TileMap[x, y].HasFood ? 2 : value;
+                    writer.Write(value);
                 }
                 writer.Write('\n');
             }
@@ -79,8 +95,49 @@ namespace PacMan
             System.Diagnostics.Debug.WriteLine("Level saved: " + filePath);
         }
 
+        private void BrushAdd(Tile tile)
+        {
+            switch(brushType)
+            {
+                case BrushType.Block:
+                    tile.Blocked = true;
+                    tile.HasFood = false;
+                    currentLevel.CalculateSprites();
+                    break;
+                case BrushType.Food:
+                    if (!tile.Blocked)
+                    {
+                        tile.HasFood = true;
+                    }
+                    break;
+            }
+        }
+
+        public void BrushRemove(Tile tile)
+        {
+            switch (brushType)
+            {
+                case BrushType.Block:
+                    tile.Blocked = false;                    
+                    currentLevel.CalculateSprites();
+                    break;
+                case BrushType.Food:
+                    tile.HasFood = false;
+                    break;
+            }
+        }
+
         public void Update(GameTime gameTime)
         {
+            if (Keyboard.GetState().IsKeyDown(Keys.D1))
+            {
+                brushType = BrushType.Block;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D2))
+            {
+                brushType = BrushType.Food;
+            }
+
             Vector2 mousePoint = new Vector2(Mouse.GetState().X, Mouse.GetState().Y) - levelPosition;
            
             hoveredTile = null;
@@ -91,13 +148,11 @@ namespace PacMan
                     hoveredTile = tile;
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
-                        tile.Blocked = true;
-                        currentLevel.CalculateSprites();
+                        BrushAdd(tile);
                     }
                     else if (Mouse.GetState().RightButton == ButtonState.Pressed)
                     {
-                        tile.Blocked = false;
-                        currentLevel.CalculateSprites();
+                        BrushRemove(tile);
                     }
                 }
             }
@@ -113,14 +168,13 @@ namespace PacMan
                 if(hoveredTile == tile)
                 {
                     spriteBatch.Draw(HighlightTexture, levelPosition + tile.Position, null, Color.White, 0f, Vector2.Zero, Game1.Scale, SpriteEffects.None, 1.0f);
+                    if(brushType == BrushType.Food && !hoveredTile.Blocked)
+                    {
+                        FoodSprite.Draw(spriteBatch, levelPosition + tile.Position + new Vector2(currentLevel.TileSize / 2), Game1.Scale, new Vector2(0.5f));
+                    }
                 }
-
-                if (tile.Sprite == null)
-                {
-                    continue;
-                }
-                tile.Sprite.Draw(spriteBatch, levelPosition + tile.Position, Game1.Scale, SpriteEffects.None, Color.White);
             }
+            currentLevel.Draw(spriteBatch);
         }
 
     }

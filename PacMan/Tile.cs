@@ -44,5 +44,11 @@ namespace PacMan
             get { return new Rectangle((int)position.X, (int)position.Y, size, size); }
         }
 
+        public bool HasFood
+        {
+            get;
+            set;
+        }
+
     }
 }

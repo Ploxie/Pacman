@@ -49,20 +49,20 @@ namespace PacMan
 
             Tile.NULL_SPRITE = new SpriteSheet(CreateFilledTexture(32, 32, new Color(0, 0, 64, 128))).Sprite;
 
-            SpriteSheet pacmanSheet = new SpriteSheet(spritesheetTexture, Vector2.Zero, new Vector2(16, 16), new Vector2(16, 16));
+            SpriteSheet spritesheet = new SpriteSheet(spritesheetTexture, Vector2.Zero, new Vector2(135,112), new Vector2(16, 16));
 
-            SpriteSheet tilesetSheet = new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32, 32), 1);
+            SpriteSheet tilesheet = new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32, 32), 1);
 
-            Level level = Level.LoadLevel(tilesetSheet,"Content\\Level1.txt");
+            Level level = Level.LoadLevel(tilesheet, spritesheet, "Content\\Level1.txt");
 
-            game = new InGameState(tilesetSheet, pacmanSheet);
+            game = new InGameState(tilesheet, spritesheet);
             game.SetLevel(level);
                                    
-            editor = new Editor(tilesetSheet, Window);
+            editor = new Editor(tilesheet,spritesheet, Window);
             editor.SetLevel(level);
             editor.GridTexture = CreateRectangleTexture(32, 32, new Color(128, 128, 128, 128));
             editor.HighlightTexture = CreateFilledTexture(32, 32, new Color(128,128,128,128));
-            editor.SelectedTexture = CreateFilledTexture(32, 32, new Color(255, 0, 0, 64));
+            editor.FoodSprite = spritesheet.GetAt(4, 0);
                        
 
             gameState = editor;

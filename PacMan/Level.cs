@@ -14,13 +14,16 @@ namespace PacMan
 
         private Tile[,] tileMap;
         private SpriteSheet tileSheet;
+
         private int width, height;
         private int tileSize;
 
-        private Level(SpriteSheet spritesheet, int columns, int rows, int tileSize)
+        private Sprite foodSprite;
+
+        private Level(SpriteSheet tileSheet,SpriteSheet sprites, int columns, int rows, int tileSize)
         {
             this.tileSize = tileSize;
-            this.tileSheet = spritesheet;
+            this.tileSheet = tileSheet;
             this.tileMap = new Tile[columns, rows];
 
             for (int y = 0; y < rows; y++)
@@ -34,6 +37,8 @@ namespace PacMan
 
             width = columns;
             height = rows;
+
+            this.foodSprite = sprites.GetAt(4, 0);
         }
 
         public Tile[,] TileMap
@@ -66,12 +71,12 @@ namespace PacMan
             get { return (int)(Height * tileSize * Game1.Scale.Y); } 
         }
 
-        public static Level CreateLevel(SpriteSheet spritesheet, int width, int height, int tileSize)
+        public static Level CreateLevel(SpriteSheet spritesheet,SpriteSheet sprites, int width, int height, int tileSize)
         {
-            return new Level(spritesheet, width, height, tileSize);
+            return new Level(spritesheet, sprites, width, height, tileSize);
         }
 
-        public static Level LoadLevel(SpriteSheet spritesheet, string filePath)
+        public static Level LoadLevel(SpriteSheet spritesheet,SpriteSheet sprites, string filePath)
         {
 
             StreamReader reader = new StreamReader(filePath);
@@ -81,7 +86,7 @@ namespace PacMan
             int height = int.Parse(reader.ReadLine());
             int tileSize = int.Parse(reader.ReadLine());
 
-            Level level = new Level(spritesheet, width, height, tileSize);
+            Level level = new Level(spritesheet,sprites, width, height, tileSize);
 
             level.tileMap = new Tile[width, height];
             
@@ -91,7 +96,16 @@ namespace PacMan
                 x = 0;
                 foreach (char c in currentLine)
                 {
-                    level.tileMap[x, y] = new Tile(c == '0', null, new Vector2(x, y) * tileSize, tileSize);
+                    int value = int.Parse(c.ToString());
+                    bool blocked = value == 1;
+                    bool food = value == 2;
+                    bool powerupGhost = value == 3;
+                    bool powerupWall = value == 4;
+                    bool pacspawn = value == 5;
+                    bool ghostspawn = value == 6;
+
+                    level.tileMap[x, y] = new Tile(blocked, null, new Vector2(x, y) * tileSize, tileSize);
+                    level.tileMap[x, y].HasFood = food;
                     x++;
                 }
                 y++;
@@ -249,6 +263,11 @@ namespace PacMan
             foreach(Tile tile in tileMap)
             {
                 tile.Sprite.Draw(spriteBatch, tile.Position, Game1.Scale, SpriteEffects.None, Color.White);
+                
+                if(tile.HasFood)
+                {
+                    foodSprite.Draw(spriteBatch, tile.Position + new Vector2(TileSize / 2), Game1.Scale, new Vector2(0.5f));
+                }
             }
         }
                
