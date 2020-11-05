@@ -9,9 +9,11 @@ namespace PacMan
 {
     public class Pacman : Character
     {
+        
         public Pacman(SpriteSheet spritesheet, Level level, int lives) : base(spritesheet, level)
         {
             Lives = lives;
+            timePerFrame = 100.0f;
         }
 
         public int Lives
@@ -24,6 +26,22 @@ namespace PacMan
         {
             get;
             set;
+        }
+
+        protected override void UpdateAnimation()
+        {
+            if(spritesheet.XIndex == 0)
+            {
+                spritesheet.XIndex = 1;
+            }
+            /*else if(spritesheet.XIndex == 1)
+            {
+                spritesheet.XIndex = 2;
+            }*/
+            else
+            {
+                spritesheet.XIndex = 0;
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -45,13 +63,19 @@ namespace PacMan
                 ChangeDirection(1, 0);
             }
 
-            UpdateMovement(gameTime);
-            // check movement
+            UpdateMovement(gameTime);            
+            UpdateAnimationTimer(gameTime);
+            
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spritesheet.Sprite.Draw(spriteBatch, Position, Game1.Scale * 2, new Vector2(0.5f, 0.5f), SpriteEffects.None);
+
+            float rotation = 0.0f;
+            rotation = facing == Direction.Down ? (float)(Math.PI / 2) : rotation;
+            rotation = facing == Direction.Left ? (float)(Math.PI / 2) * 2.0f : rotation;
+            rotation = facing == Direction.Up ? (float)(Math.PI / 2) * 3.0f : rotation;
+            spritesheet.Sprite.Draw(spriteBatch, Position, Game1.Scale * 2, new Vector2(0.5f, 0.5f), rotation, SpriteEffects.None);
         }
         
     }

@@ -44,11 +44,11 @@ namespace PacMan
             spriteBatch.Draw(texture, position, source, color.Value, 0.0f, Vector2.Zero, scale, spriteEffects, 1.0f);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position, Vector2 scale, Vector2 origin, SpriteEffects spriteEffects = SpriteEffects.None)
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, Vector2 scale, Vector2 origin, float rotation = 0, SpriteEffects spriteEffects = SpriteEffects.None)
         {
             Rectangle source = new Rectangle((int)SpriteSheetPosition.X, (int)SpriteSheetPosition.Y, (int)SpriteSize.X, (int)SpriteSize.Y);
             origin = new Vector2(source.Width, source.Height) * origin;
-            spriteBatch.Draw(texture, position, source, Color.White, 0.0f, origin, scale, spriteEffects, 1.0f);
+            spriteBatch.Draw(texture, position, source, Color.White, rotation, origin, scale, spriteEffects, 1.0f);
         }
 
     }

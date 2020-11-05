@@ -9,6 +9,14 @@ namespace PacMan
     public abstract class Character
     {
 
+        protected enum Direction
+        {
+            Up,
+            Down,
+            Left,
+            Right,
+        }
+
         protected SpriteSheet spritesheet;
         protected Level level;
 
@@ -17,11 +25,17 @@ namespace PacMan
         protected Vector2 direction;
         protected float speed;
 
+        protected Direction facing;
+
+        protected double animationTimer;
+        protected double timePerFrame = 200.0f;
+
         public Character(SpriteSheet spritesheet, Level level)
         {
             this.spritesheet = spritesheet;
             this.level = level;
             this.speed = 3.0f;
+            this.facing = Direction.Up;
         }
 
         public Vector2 Position
@@ -50,6 +64,23 @@ namespace PacMan
                 this.position = currentTileMiddle;
                 this.destination = destinationTilePosition;                
                 this.direction = direction;
+
+                if (direction.X > 0)
+                {
+                    this.facing = Direction.Right;
+                }
+                else if (direction.X < 0)
+                {
+                    this.facing = Direction.Left;
+                }
+                else if (direction.Y < 0)
+                {
+                    this.facing = Direction.Up;
+                }
+                else if (direction.Y > 0)
+                {
+                    this.facing = Direction.Down;
+                }
             }
         }
 
@@ -74,6 +105,18 @@ namespace PacMan
                 position = destination;            
             }
         }
+
+        protected abstract void UpdateAnimation();
+
+        protected void UpdateAnimationTimer(GameTime gameTime)
+        {
+            animationTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+            if(animationTimer <= 0)
+            {
+                UpdateAnimation();
+                animationTimer = timePerFrame;
+            }
+        }        
 
         public abstract void Update(GameTime gameTime);
 

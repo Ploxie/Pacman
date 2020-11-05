@@ -26,7 +26,8 @@ namespace PacMan
         {
             currentLevel = level;
 
-            pacman = new Pacman(characterSheet, level, 5);
+            SpriteSheet pacmanSheet = new SpriteSheet(characterSheet.Texture, Vector2.Zero, new Vector2(80, 16), new Vector2(16, 16));
+            pacman = new Pacman(pacmanSheet, level, 5);
             pacman.Position = level.GetTile(1, 1).Position + new Vector2(level.TileSize / 2);
         }
 
