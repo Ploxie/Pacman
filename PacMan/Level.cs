@@ -114,28 +114,28 @@ namespace PacMan
                     bool topBlocked = true;
                     bool bottomBlocked = true;
 
-                    if(tileMap[x, y].Blocked)
+                    if(!tileMap[x, y].Blocked)
                     {
                         tileMap[x, y].Sprite = Tile.NULL_SPRITE;
                         continue;
                     }
 
-                    if (x - 1 >= 0 && !tileMap[x - 1, y].Blocked)
+                    if (x - 1 >= 0 && tileMap[x - 1, y].Blocked)
                     {
                         leftBlocked = false;
                     }
 
-                    if (x + 1 < width && !tileMap[x + 1, y].Blocked)
+                    if (x + 1 < width && tileMap[x + 1, y].Blocked)
                     {
                         rightBlocked = false;
                     }
 
-                    if (y - 1 >= 0 && !tileMap[x, y - 1].Blocked)
+                    if (y - 1 >= 0 && tileMap[x, y - 1].Blocked)
                     {
                         topBlocked = false;
                     }
 
-                    if (y + 1 < height && !tileMap[x, y + 1].Blocked)
+                    if (y + 1 < height && tileMap[x, y + 1].Blocked)
                     {
                         bottomBlocked = false;
                     }
