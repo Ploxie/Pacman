@@ -63,6 +63,7 @@ namespace PacMan
             editor.GridTexture = CreateRectangleTexture(32, 32, new Color(128, 128, 128, 128));
             editor.HighlightTexture = CreateFilledTexture(32, 32, new Color(128,128,128,128));
             editor.FoodSprite = spritesheet.GetAt(4, 0);
+            editor.PowerupGhostSprite = spritesheet.GetAt(0, 6);
                        
 
             gameState = editor;

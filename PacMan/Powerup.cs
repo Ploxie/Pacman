@@ -6,29 +6,37 @@ using System.Text;
 
 namespace PacMan
 {
-    class Powerup
+    public enum PowerUpType 
     {
-        public enum PowerUpType { WallEater, GhostEater, Food }
-        PowerUpType type;
-
-        Vector2 position;
-        Sprite texture;
-        Tile myTile;
-        int score;
-
-
-        public Powerup(Vector2 position, Sprite texture, Tile tile, int score, PowerUpType type)
+        Food,
+        WallEater, 
+        GhostEater, 
+    }
+    public class Powerup
+    {              
+        public Powerup(PowerUpType type, Sprite sprite, int score)
         {
-            this.position = position;
-            this.texture = texture;
-            this.myTile = tile;
-            this.score = score;
-            this.type = type;
+            Type = type;
+            Sprite = sprite;
+            Score = score;
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public PowerUpType Type
         {
-            texture.Draw(spriteBatch, position, Game1.Scale, SpriteEffects.None, Color.White);
+            get;
+            private set;
+        }
+
+        public Sprite Sprite
+        {
+            get;
+            private set;
+        }
+
+        public int Score
+        {
+            get;
+            private set;
         }
     }
 }

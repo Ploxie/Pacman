@@ -19,6 +19,7 @@ namespace PacMan
         private int tileSize;
 
         private Sprite foodSprite;
+        private Sprite powerupGhostSprite;
 
         private Level(SpriteSheet tileSheet,SpriteSheet sprites, int columns, int rows, int tileSize)
         {
@@ -39,6 +40,7 @@ namespace PacMan
             height = rows;
 
             this.foodSprite = sprites.GetAt(4, 0);
+            this.powerupGhostSprite = sprites.GetAt(0, 6);
         }
 
         public Tile[,] TileMap
@@ -105,7 +107,7 @@ namespace PacMan
                     bool ghostspawn = value == 6;
 
                     level.tileMap[x, y] = new Tile(blocked, null, new Vector2(x, y) * tileSize, tileSize);
-                    level.tileMap[x, y].HasFood = food;
+                    level.tileMap[x, y].Powerup = food ? new Powerup(PowerUpType.Food, sprites.GetAt(4,0), 100) : null;
                     x++;
                 }
                 y++;
@@ -264,10 +266,10 @@ namespace PacMan
             {
                 tile.Sprite.Draw(spriteBatch, tile.Position, Game1.Scale, SpriteEffects.None, Color.White);
                 
-                if(tile.HasFood)
+                if(tile.Powerup != null)
                 {
-                    foodSprite.Draw(spriteBatch, tile.Position + new Vector2(TileSize / 2), Game1.Scale, new Vector2(0.5f));
-                }
+                   tile.Powerup.Sprite.Draw(spriteBatch, tile.Position + new Vector2(TileSize / 2), Game1.Scale, new Vector2(0.5f));
+                }                
             }
         }
                
