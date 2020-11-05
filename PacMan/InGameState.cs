@@ -19,15 +19,16 @@ namespace PacMan
         public InGameState(SpriteSheet tilesheet, SpriteSheet characterSheet)
         {
             this.tilesheet = tilesheet;
-            this.characterSheet = characterSheet;
-
-            pacman = new Pacman(characterSheet, 5);
+            this.characterSheet = characterSheet;            
         }
 
         public void SetLevel(string filePath)
         {
             Level level = new Level(tilesheet);
             level.LoadLevel(filePath);
+            currentLevel = level;
+
+            pacman = new Pacman(characterSheet, level, 5);
         }
 
         private void PowerupCollision()
@@ -37,13 +38,20 @@ namespace PacMan
 
         public void Update(GameTime gameTime)
         {
-            pacman.Update(gameTime);
+            if (pacman != null)
+            {
+                pacman.Update(gameTime);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             currentLevel.Draw(spriteBatch);
-            pacman.Draw(spriteBatch);
+
+            if(pacman != null)
+            {
+                pacman.Draw(spriteBatch);
+            }
         }        
     }
 }

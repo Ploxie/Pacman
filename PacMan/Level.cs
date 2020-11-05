@@ -30,7 +30,7 @@ namespace PacMan
             {
                 for (int x = 0; x < columns; x++)
                 {
-                    tileMap[x, y] = new Tile(Tile.EMPTY_TYPE, null, new Vector2(x * 32, y * 32) * Game1.Scale, (int)(32 * Game1.Scale.X));
+                    tileMap[x, y] = new Tile(false, null, new Vector2(x * 32, y * 32) * Game1.Scale, (int)(32 * Game1.Scale.X));
                 }
             }
 
@@ -81,7 +81,7 @@ namespace PacMan
                 x = 0;
                 foreach (char c in currentLine)
                 {
-                    tileMap[x, y] = new Tile(c, null, new Vector2(x, y) * tileSize, tileSize);
+                    tileMap[x, y] = new Tile(c == '0', null, new Vector2(x, y) * tileSize, tileSize);
                     x++;
                 }
                 y++;
@@ -102,28 +102,28 @@ namespace PacMan
                     bool topBlocked = true;
                     bool bottomBlocked = true;
 
-                    if(tileMap[x, y].Type == '0')
+                    if(tileMap[x, y].Blocked)
                     {
                         tileMap[x, y].Sprite = Tile.NULL_SPRITE;
                         continue;
                     }
 
-                    if (x - 1 >= 0 && tileMap[x - 1, y].Type == '1')
+                    if (x - 1 >= 0 && !tileMap[x - 1, y].Blocked)
                     {
                         leftBlocked = false;
                     }
 
-                    if (x + 1 < width && tileMap[x + 1, y].Type == '1')
+                    if (x + 1 < width && !tileMap[x + 1, y].Blocked)
                     {
                         rightBlocked = false;
                     }
 
-                    if (y - 1 >= 0 && tileMap[x, y - 1].Type == '1')
+                    if (y - 1 >= 0 && !tileMap[x, y - 1].Blocked)
                     {
                         topBlocked = false;
                     }
 
-                    if (y + 1 < height && tileMap[x, y + 1].Type == '1')
+                    if (y + 1 < height && !tileMap[x, y + 1].Blocked)
                     {
                         bottomBlocked = false;
                     }
@@ -203,6 +203,20 @@ namespace PacMan
                     }
                 }
             }
+        }
+
+        public Tile GetAt(int x, int y)
+        {
+            if(x < 0 || x >= width || y < 0 || y >= height)
+            {
+                return null;
+            }
+            return tileMap[x, y];
+        }
+
+        public Tile GetAt(Vector2 position)
+        {
+            return GetAt((int)position.X, (int)position.Y);
         }
 
         public void Draw(SpriteBatch spriteBatch)
