@@ -27,7 +27,7 @@ namespace PacMan
             currentLevel = level;
 
             pacman = new Pacman(characterSheet, level, 5);
-            pacman.Position = level.GetAt(1, 1).Position;
+            pacman.Position = level.GetTile(1, 1).Position + new Vector2(level.TileSize / 2);
         }
 
         private void PowerupCollision()

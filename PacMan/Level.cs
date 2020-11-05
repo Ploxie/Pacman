@@ -217,16 +217,26 @@ namespace PacMan
             }
         }
 
+        public Tile GetTile(int x, int y)
+        {
+            if (x < 0 || x >= width || y < 0 || y >= height)
+            {
+                return null;
+            }
+            return tileMap[x, y];
+        }
+
+        public Tile GetTile(Vector2 indices)
+        {
+            return GetTile((int)indices.X, (int)indices.Y);
+        }
+
         public Tile GetAt(float x, float y)
         {
             int xIndex = (int)(x / (tileSize * Game1.Scale.X));
             int yIndex = (int)(y / (tileSize * Game1.Scale.Y));
 
-            if (xIndex < 0 || xIndex >= width || yIndex < 0 || yIndex >= height)
-            {
-                return null;
-            }
-            return tileMap[xIndex, yIndex];
+            return GetTile(xIndex, yIndex);
         }
 
         public Tile GetAt(Vector2 position)
