@@ -42,7 +42,8 @@ namespace PacMan
             hud.Pacman = pacman;
             this.levelPosition = new Vector2((window.ClientBounds.Width / 2) - (level.PixelWidth / 2), (window.ClientBounds.Height / 2) - (level.PixelHeight / 2));
 
-            ghost = new Ghost(pacmanSheet, level, pacman, new GhostPathfinding(pacman, level));
+            SpriteSheet redGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0,16), new Vector2(128, 16), new Vector2(16, 16));
+            ghost = new Ghost(redGhostSheet, level, pacman, new GhostPathfinding(pacman, level));
             ghost.Position = level.GetTile(22, 22).Position + new Vector2(level.TileSize / 2);
         }
 

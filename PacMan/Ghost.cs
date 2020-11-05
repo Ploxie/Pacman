@@ -4,6 +4,7 @@ using PacMan.GhostBehaviours;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Transactions;
 
 namespace PacMan
 {
@@ -25,7 +26,55 @@ namespace PacMan
             this.behaviour.Ghost = this;
         }
 
-        protected override void UpdateAnimation() { }
+        protected override void UpdateAnimation() 
+        {
+            System.Diagnostics.Debug.WriteLine(direction);
+            if (direction.X > 0)
+            {
+                if (spritesheet.XIndex == 0)
+                {
+                    spritesheet.XIndex = 1;
+                }
+                else
+                {
+                    spritesheet.XIndex = 0;
+                }
+            }
+            else if (direction.X < 0)
+            {
+                if (spritesheet.XIndex == 2)
+                {
+                    spritesheet.XIndex = 3;
+                }
+                else
+                {
+                    spritesheet.XIndex = 2;
+                }
+            }
+            else if (direction.Y < 0)
+            {
+                if (spritesheet.XIndex == 4)
+                {
+                    spritesheet.XIndex = 5;
+                }
+                else
+                {
+                    spritesheet.XIndex = 4;
+                }
+            }
+            else if (direction.Y > 0)
+            {
+                if (spritesheet.XIndex == 6)
+                {
+                    spritesheet.XIndex = 7;
+                }
+                else
+                {
+                    spritesheet.XIndex = 6;
+                }
+            }
+
+        }
 
         public override void Update(GameTime gameTime)
         {

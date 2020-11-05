@@ -34,10 +34,6 @@ namespace PacMan
             {
                 spritesheet.XIndex = 1;
             }
-            /*else if(spritesheet.XIndex == 1)
-            {
-                spritesheet.XIndex = 2;
-            }*/
             else
             {
                 spritesheet.XIndex = 0;
