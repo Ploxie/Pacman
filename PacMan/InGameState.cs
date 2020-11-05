@@ -74,7 +74,7 @@ namespace PacMan
             }
             if (ghost != null)
             {
-                ghost.Draw(spriteBatch);
+                ghost.Draw(spriteBatch, levelPosition);
             }
         }        
     }
