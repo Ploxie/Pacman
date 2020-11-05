@@ -10,11 +10,16 @@ namespace PacMan
         protected Ghost ghost;
         protected Pacman pacman;
         protected Level level;
-        public GhostBehaviour(Ghost ghost, Pacman pacman, Level level)
+        public GhostBehaviour(Pacman pacman, Level level)
         {
-            this.ghost = ghost;
             this.pacman = pacman;
             this.level = level;
+        }
+
+        public Ghost Ghost
+        {
+            get { return ghost; }
+            set { ghost = value; }
         }
 
         public abstract Vector2 CalculateDirection();

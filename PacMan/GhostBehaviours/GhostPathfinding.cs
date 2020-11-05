@@ -9,7 +9,7 @@ namespace PacMan.GhostBehaviours
     public class GhostPathfinding : GhostBehaviour
     {
 
-        public GhostPathfinding(Ghost ghost, Pacman pacman, Level level) : base(ghost, pacman, level)
+        public GhostPathfinding(Pacman pacman, Level level) : base(pacman, level)
         {
 
         }
