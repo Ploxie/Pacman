@@ -13,6 +13,7 @@ namespace PacMan
 
         private Level currentLevel;
         private Pacman pacman;
+        private Ghost ghost;
 
         private List<Powerup> powerups = new List<Powerup>();
 
@@ -29,6 +30,9 @@ namespace PacMan
             SpriteSheet pacmanSheet = new SpriteSheet(characterSheet.Texture, Vector2.Zero, new Vector2(80, 16), new Vector2(16, 16));
             pacman = new Pacman(pacmanSheet, level, 5);
             pacman.Position = level.GetTile(1, 1).Position + new Vector2(level.TileSize / 2);
+
+            ghost = new Ghost(pacmanSheet, level, pacman, Ghost.AItype.Patrolling);
+            ghost.Position = level.GetTile(22, 22).Position + new Vector2(level.TileSize / 2);
         }
 
         private void PowerupCollision()
@@ -42,6 +46,10 @@ namespace PacMan
             {
                 pacman.Update(gameTime);
             }
+            if (ghost != null)
+            {
+                ghost.Update(gameTime);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -51,6 +59,10 @@ namespace PacMan
             if(pacman != null)
             {
                 pacman.Draw(spriteBatch);
+            }
+            if (ghost != null)
+            {
+                ghost.Draw(spriteBatch);
             }
         }        
     }

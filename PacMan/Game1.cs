@@ -1,11 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace PacMan
 {
     public class Game1 : Game
     {
+        public static Random random = new Random();
+
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
