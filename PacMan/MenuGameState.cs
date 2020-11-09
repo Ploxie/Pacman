@@ -24,15 +24,18 @@ namespace PacMan
         private Vector2 endPosition;
 
         private GameWindow window;
+        private HUD hud;
 
-        public MenuGameState(Texture2D start, SpriteFont font, GameWindow window)
+        public MenuGameState(HUD hud, Texture2D start, SpriteFont font, GameWindow window)
         {
+            this.hud = hud;
             this.menuFont = font;
             clickTimer = 0;
 
             this.window = window;
 
             background = start;
+            this.Highscores = new List<int>();
         }
 
         public bool Quit
@@ -48,6 +51,12 @@ namespace PacMan
         }
 
         public bool Editor
+        {
+            get;
+            set;
+        }
+
+        public List<int> Highscores
         {
             get;
             set;
@@ -106,12 +115,47 @@ namespace PacMan
             clickTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
         }
 
+        private void DrawHighscores(SpriteBatch spriteBatch, Vector2 position)
+        {
+            float x = position.X;
+            float y = position.Y;
+
+            hud.HighscoreSprite.Draw(spriteBatch, new Vector2(x - (hud.HighscoreSprite.SpriteSize.X * Game1.Scale.X), y), Game1.Scale * 2);
+            y += (hud.HighscoreSprite.SpriteSize.Y * Game1.Scale.Y) + 25;
+
+            int scoreLength = (int)(8 * Game1.Scale.X * 2 * 6);
+
+            if (Highscores.Count == 0)
+            {
+                Vector2 highscorePosition = new Vector2(x - (scoreLength / 2), y);
+                hud.DrawScore(spriteBatch, 0, highscorePosition, Game1.Scale * 2.0f, Color.White);
+                return;
+            }
+
+            bool hasShownYourScore = false;
+            for(int i = 0; i < 7; i++)
+            {                
+                if(i >= Highscores.Count)
+                {
+                    break;
+                }
+
+                Vector2 highscorePosition = new Vector2(x - (scoreLength / 2), y);
+
+                hud.DrawScore(spriteBatch, Highscores[i], highscorePosition, Game1.Scale * 2.0f, (Highscores[i] == hud.Pacman.Score && !hasShownYourScore) ? Color.Yellow : Color.White);
+                if (Highscores[i] == hud.Pacman.Score)
+                {
+                    hasShownYourScore = true;
+                }
+                y  +=  25;
+            }     
+        }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            startPosistion = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 1.7f);
-            editorPosition = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 1.6f);
-            endPosition = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 1.5f);
+            startPosistion = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 1.7f + 100);
+            editorPosition = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 1.6f + 100);
+            endPosition = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 1.5f + 100);
 
 
             spriteBatch.Draw(background, new Vector2(50,100), Color.White);
@@ -133,6 +177,9 @@ namespace PacMan
                 spriteBatch.DrawString(menuFont, "Level Editor", editorPosition, Color.White);
                 spriteBatch.DrawString(menuFont, "End Game", endPosition, Color.Red);
             }
+
+            Vector2 highscorePosition = new Vector2(window.ClientBounds.Width / 2, window.ClientBounds.Height / 2 - 50);
+            DrawHighscores(spriteBatch, highscorePosition);
         }
     }
 }
