@@ -14,12 +14,16 @@ namespace PacMan
 
         private Texture2D spritesheetTexture;
         private Texture2D tilesetTexture;
+        private Texture2D pacmanBackgroundTexture;
+
+        private SpriteFont menuFont;
 
         private SpriteSheet tilesheet;
         private SpriteSheet spritesheet;
 
         private Editor editor;
         private InGameState game;
+        private MenuGameState menu;
 
         private GameState gameState;
         private KeyboardState lastKeyboardState;
@@ -48,7 +52,10 @@ namespace PacMan
 
             spritesheetTexture = Content.Load<Texture2D>("SpriteSheet");
             tilesetTexture = Content.Load<Texture2D>("Tileset");
+            pacmanBackgroundTexture = Content.Load<Texture2D>("pacmanBackground");
             Texture2D scoreTexture = Content.Load<Texture2D>("score-numbers");
+
+            menuFont = Content.Load<SpriteFont>("menuFont");
             
             Tile.NULL_SPRITE = new SpriteSheet(CreateFilledTexture(32, 32, new Color(0, 0, 64, 128))).Sprite;
 
@@ -76,7 +83,9 @@ namespace PacMan
             editor.PacmanSpawnSprite = spritesheet.GetAt(1, 0);
             editor.GhostSpawnSprite = spritesheet.GetAt(0, 1);
 
-            gameState = editor;
+            menu = new MenuGameState(pacmanBackgroundTexture, menuFont, Window);
+
+            gameState = menu;
 
             
         }
@@ -179,9 +188,20 @@ namespace PacMan
                 lastKeyboardState = Keyboard.GetState();
             }
 
+            if (menu.Play)
+            {
+                gameState = game;
+                menu.Play = false;
+            }
+            else if (menu.Editor)
+            {
+                gameState = editor;
+                menu.Editor = false;
+            }
+
             KeyboardState keyboardState = Keyboard.GetState();
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape) || menu.Quit)
                 Exit();
 
             HandleEditorInput(keyboardState);

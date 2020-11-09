@@ -13,8 +13,10 @@ namespace PacMan
         WallEater, 
         GhostEater, 
     }
+
     public class Powerup
-    {              
+    {
+        private Vector2 position;
         public Powerup(PowerUpType type, Sprite sprite, int score)
         {
             Type = type;
@@ -39,5 +41,12 @@ namespace PacMan
             get;
             private set;
         }
+
+        public Vector2 Position 
+        {
+            get { return position; }
+            private set { position = value; }
+        }
     }
+    
 }

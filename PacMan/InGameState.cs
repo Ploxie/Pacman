@@ -65,12 +65,33 @@ namespace PacMan
 
         private void PowerupCollision()
         {
-            //if pacman and powerup are on the same tile do something...
+            if (currentLevel.GetAt(pacman.Position).Powerup != null)
+            {
+                pacman.Score += currentLevel.GetAt(pacman.Position).Powerup.Score;
+                currentLevel.GetAt(pacman.Position).Powerup = null;
+
+
+                /*switch (currentLevel.GetAt(pacman.Position).Powerup.Type)
+                {
+                    case PowerUpType.Food:
+                        break;
+                    case PowerUpType.BigFood:
+                        break;
+                    case PowerUpType.WallEater:
+                        break;
+                    case PowerUpType.GhostEater:
+                        break;
+                    default:
+                        break;
+                }*/
+            }
+
         }
 
         public void Update(GameTime gameTime)
         {
             hud.Update(gameTime);
+
             if (pacman != null)
             {
                 pacman.Update(gameTime);
@@ -83,6 +104,8 @@ namespace PacMan
             {
                 //ghost.Update(gameTime);
             }
+
+            PowerupCollision();
         }
 
         public void Draw(SpriteBatch spriteBatch)
