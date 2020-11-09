@@ -18,7 +18,6 @@ namespace PacMan
         private HUD hud;
         private Level currentLevel;
         private Pacman pacman;
-        private Ghost ghost;
 
         private List<Ghost> ghosts = new List<Ghost>();
         private List<Powerup> powerups = new List<Powerup>();
@@ -50,17 +49,38 @@ namespace PacMan
             hud.Pacman = pacman;
             this.levelPosition = new Vector2((window.ClientBounds.Width / 2) - (level.PixelWidth / 2), (window.ClientBounds.Height / 2) - (level.PixelHeight / 2));
 
-            SpriteSheet redGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0,16), new Vector2(128, 16), new Vector2(16, 16));
+            SpriteSheet redGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 16), new Vector2(128, 16), new Vector2(16, 16));
+            SpriteSheet pinkGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 32), new Vector2(128, 16), new Vector2(16, 16));
+            SpriteSheet blueGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 48), new Vector2(128, 16), new Vector2(16, 16));
+            SpriteSheet orangeGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 64), new Vector2(128, 16), new Vector2(16, 16));
 
+            int ghostBehaviourIndex = 0;
             foreach(Tile spawn in level.GhostSpawns)
             {
-                Ghost ghost = new Ghost(redGhostSheet, level, pacman, new GhostPathfinding(pacman, level));
+                GhostBehaviour behaviour = null;
+                SpriteSheet ghostSpritesheet = null;
+                switch(ghostBehaviourIndex)
+                {
+                    case 0:
+                        behaviour = new GhostPatrolling(pacman, level);
+                        ghostSpritesheet = blueGhostSheet;
+                        break;
+                    case 1:
+                        behaviour = new GhostPathfinding(pacman, level);
+                        ghostSpritesheet = pinkGhostSheet;
+                        break;
+                    default:
+                        behaviour = new GhostFullyRandom(pacman, level);
+                        ghostSpritesheet = redGhostSheet;
+                        break;
+                }
+
+                Ghost ghost = new Ghost(ghostSpritesheet, level, pacman, behaviour);
                 ghost.Position = spawn.Position + new Vector2(level.TileSize / 2);
                 ghosts.Add(ghost);
+                ghostBehaviourIndex++;
+                ghostBehaviourIndex %= 3;
             }
-
-            ghost = new Ghost(pacmanSheet, level, pacman, new GhostPathfinding(pacman, level));
-            ghost.Position = level.GetTile(22, 22).Position + new Vector2(level.TileSize / 2);
         }
 
         private void PowerupCollision()
@@ -85,7 +105,6 @@ namespace PacMan
                         break;
                 }*/
             }
-
         }
 
         public void Update(GameTime gameTime)
@@ -99,10 +118,6 @@ namespace PacMan
             foreach(Ghost ghost in ghosts)
             {
                 ghost.Update(gameTime);
-            }
-            if (ghost != null)
-            {
-                //ghost.Update(gameTime);
             }
 
             PowerupCollision();
@@ -120,10 +135,6 @@ namespace PacMan
             foreach (Ghost ghost in ghosts)
             {
                 ghost.Draw(spriteBatch, levelPosition);
-            }
-            if (ghost != null)
-            {
-                //ghost.Draw(spriteBatch, levelPosition);
             }
         }        
     }

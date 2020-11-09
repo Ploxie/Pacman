@@ -9,7 +9,9 @@ namespace PacMan
 {
     public class Pacman : Character
     {
-        
+
+        private Vector2 currentTilePosition;
+        private Vector2 preferredDirection;
         public Pacman(SpriteSheet spritesheet, Level level, int lives) : base(spritesheet, level)
         {
             Lives = lives;
@@ -41,27 +43,33 @@ namespace PacMan
         }
 
         public override void Update(GameTime gameTime)
-        {
+        {           
             if(Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                ChangeDirection(0, -1);
+                preferredDirection = new Vector2(0, -1);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                ChangeDirection(-1, 0);
+                preferredDirection = new Vector2(-1, 0);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                ChangeDirection(0, 1);
+                preferredDirection = new Vector2(0, 1);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                ChangeDirection(1, 0);
+                preferredDirection = new Vector2(1, 0);                
             }
+
+            ChangeDirection(preferredDirection);
 
             UpdateMovement(gameTime);            
             UpdateAnimationTimer(gameTime);
-            
+
+            if(currentTilePosition != TilePosition)
+            {
+                currentTilePosition = TilePosition;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)
