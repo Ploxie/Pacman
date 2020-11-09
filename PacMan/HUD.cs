@@ -95,12 +95,7 @@ namespace PacMan
         {
             DrawScore(spriteBatch, score, position, scale);
         }
-
-        public void Update(GameTime gameTime)
-        {
-
-        }
-
+        
         public void Draw(SpriteBatch spriteBatch)
         {
 
@@ -120,7 +115,7 @@ namespace PacMan
 
 
             Rectangle bottomRectangle = new Rectangle(0, window.ClientBounds.Height - bottomHeight, window.ClientBounds.Width, bottomHeight);
-            DrawLives(spriteBatch, 5, new Vector2(bottomRectangle.X, bottomRectangle.Y) + new Vector2(14,(bottomRectangle.Height/2) - ((lifeSprite.SpriteSize.Y * uiScale) / 2)), new Vector2(uiScale));
+            DrawLives(spriteBatch, Pacman.Lives, new Vector2(bottomRectangle.X, bottomRectangle.Y) + new Vector2(14,(bottomRectangle.Height/2) - ((lifeSprite.SpriteSize.Y * uiScale) / 2)), new Vector2(uiScale));
         }
 
     }

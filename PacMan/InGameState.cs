@@ -30,6 +30,8 @@ namespace PacMan
             this.characterSheet = characterSheet;
         }
 
+        
+
         public void SetLevel(Level level)
         {
             currentLevel = level;
@@ -122,8 +124,6 @@ namespace PacMan
 
         public void Update(GameTime gameTime)
         {
-            hud.Update(gameTime);
-
             if (pacman != null)
             {
                 pacman.Update(gameTime);

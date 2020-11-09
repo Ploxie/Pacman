@@ -30,8 +30,10 @@ namespace PacMan
         private GameState gameState;
         private KeyboardState lastKeyboardState;
 
+        private HUD hud;
         private string currentLevelPath;
         private List<int> highscores;
+        private bool savedHighscores;
 
         public static readonly Vector2 Scale = new Vector2(1.0f, 1.0f);
 
@@ -70,7 +72,7 @@ namespace PacMan
             Level level = Level.LoadLevel(tilesheet, spritesheet, currentLevelPath);
             
             Sprite lifeSprite = spritesheet.GetAt(1, 0);
-            HUD hud = new HUD(Window, hudTop, hudBot, scoreTexture, lifeSprite);
+            hud = new HUD(Window, hudTop, hudBot, scoreTexture, lifeSprite);
             
             game = new InGameState(Window, hud, tilesheet, spritesheet);
             game.SetLevel(level);
@@ -235,6 +237,7 @@ namespace PacMan
             {
                 gameState = game;
                 menu.Play = false;
+                savedHighscores = false;
             }
             else if (menu.Editor)
             {
@@ -265,6 +268,16 @@ namespace PacMan
 
             gameState.Update(gameTime);
 
+            if(hud.Pacman.Lives <= 0 && !savedHighscores)
+            {
+                highscores.Add(hud.Pacman.Score);
+                highscores.Sort((o0, o1) => o1 - o0);
+                menu.Highscores = highscores;
+                SaveHighscores();
+                gameState = menu;
+                savedHighscores = true;
+            }
+            
             lastKeyboardState = Keyboard.GetState();
 
             base.Update(gameTime);
