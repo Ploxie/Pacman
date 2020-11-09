@@ -18,7 +18,6 @@ namespace PacMan
         private HUD hud;
         private Level currentLevel;
         private Pacman pacman;
-        private Ghost ghost;
 
         private List<Ghost> ghosts = new List<Ghost>();
         private List<Powerup> powerups = new List<Powerup>();
@@ -52,20 +51,30 @@ namespace PacMan
 
             SpriteSheet redGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0,16), new Vector2(128, 16), new Vector2(16, 16));
 
+            int ghostBehaviourIndex = 0;
             foreach(Tile spawn in level.GhostSpawns)
             {
-                Ghost ghost = new Ghost(redGhostSheet, level, pacman, new GhostPathfinding(pacman, level));
+                GhostBehaviour behaviour = null;
+                switch(ghostBehaviourIndex)
+                {
+                    case 0:
+                        behaviour = new GhostPatrolling(pacman, level);
+                        break;
+                    case 1:
+                        behaviour = new GhostPathfinding(pacman, level);
+                        break;
+                    default:
+                        behaviour = new GhostFullyRandom(pacman, level);
+                        break;
+                }
+
+                Ghost ghost = new Ghost(redGhostSheet, level, pacman, behaviour);
                 ghost.Position = spawn.Position + new Vector2(level.TileSize / 2);
                 ghosts.Add(ghost);
+                ghostBehaviourIndex++;
+                ghostBehaviourIndex %= 3;
             }
 
-            ghost = new Ghost(pacmanSheet, level, pacman, new GhostPathfinding(pacman, level));
-            ghost.Position = level.GetTile(22, 22).Position + new Vector2(level.TileSize / 2);
-        }
-
-        private void PowerupCollision()
-        {
-            //if pacman and powerup are on the same tile do something...
         }
 
         public void Update(GameTime gameTime)
@@ -78,10 +87,6 @@ namespace PacMan
             foreach(Ghost ghost in ghosts)
             {
                 ghost.Update(gameTime);
-            }
-            if (ghost != null)
-            {
-                //ghost.Update(gameTime);
             }
         }
 
@@ -97,10 +102,6 @@ namespace PacMan
             foreach (Ghost ghost in ghosts)
             {
                 ghost.Draw(spriteBatch, levelPosition);
-            }
-            if (ghost != null)
-            {
-                //ghost.Draw(spriteBatch, levelPosition);
             }
         }        
     }
