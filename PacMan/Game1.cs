@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace PacMan
 {
@@ -29,6 +31,7 @@ namespace PacMan
         private KeyboardState lastKeyboardState;
 
         private string currentLevelPath;
+        private List<int> highscores;
 
         public static readonly Vector2 Scale = new Vector2(1.0f, 1.0f);
 
@@ -83,11 +86,51 @@ namespace PacMan
             editor.PacmanSpawnSprite = spritesheet.GetAt(1, 0);
             editor.GhostSpawnSprite = spritesheet.GetAt(0, 1);
 
-            menu = new MenuGameState(pacmanBackgroundTexture, menuFont, Window);
+            highscores = new List<int>();
+            LoadHighscore();
+            menu = new MenuGameState(hud, pacmanBackgroundTexture, menuFont, Window);
+            menu.Highscores = highscores;
 
             gameState = menu;
 
             
+        }
+
+        private int LoadHighscore()
+        {
+            StreamReader sr = new StreamReader("Content\\Highscores.txt");
+
+            highscores = new List<int>();
+
+            string currentLine;
+            while ((currentLine = sr.ReadLine()) != null)
+            {
+                int score = int.Parse(currentLine);
+                highscores.Add(score);
+            }
+
+            sr.Close();
+
+            if (highscores.Count == 0)
+            {
+                return 0;
+            }
+
+            highscores.Sort((o0, o1) => o1 - o0);
+            return highscores[0];
+        }
+
+        private void SaveHighscores()
+        {
+
+            StreamWriter writer = new StreamWriter(@"Content\\Highscores.txt", false);
+
+            foreach (int score in highscores)
+            {
+                writer.WriteLine(score);
+            }
+
+            writer.Close();
         }
 
         private Texture2D CreateRectangleTexture(int width, int height, Color lineColor)
