@@ -9,6 +9,7 @@ namespace PacMan
     public enum PowerUpType 
     {
         Food,
+        BigFood,
         WallEater, 
         GhostEater, 
     }

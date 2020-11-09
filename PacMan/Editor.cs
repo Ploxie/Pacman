@@ -14,6 +14,7 @@ namespace PacMan
         {
             Block,
             Food,
+            BigFood,
             PowerupGhost,
             PowerupWall,
             PacmanSpawn,
@@ -31,7 +32,7 @@ namespace PacMan
         
         private Vector2 levelPosition;
 
-        public Editor(SpriteSheet tilesheet,SpriteSheet spritesheet, GameWindow window)
+        public Editor(SpriteSheet tilesheet, SpriteSheet spritesheet, GameWindow window)
         {
             this.tilesheet = tilesheet;
             this.spritesheet = spritesheet;
@@ -56,12 +57,36 @@ namespace PacMan
             set;
         }
 
+        public Sprite BigFoodSprite
+        {
+            get;
+            set;
+        }
+
         public Sprite PowerupGhostSprite
         {
             get;
             set;
         }
-        
+
+        public Sprite PowerupWallEaterSprite
+        {
+            get;
+            set;
+        }
+
+        public Sprite PacmanSpawnSprite
+        {
+            get;
+            set;
+        }
+
+        public Sprite GhostSpawnSprite
+        {
+            get;
+            set;
+        }
+
         public Level CreateNewLevel(string filePath, int columns, int rows, int tileSize)
         {
             Level level = Level.CreateLevel(tilesheet,spritesheet, columns, rows, tileSize);
@@ -91,6 +116,11 @@ namespace PacMan
                 {
                     int value = currentLevel.TileMap[x, y].Blocked ? 1 : 0;
                     value = currentLevel.TileMap[x, y].Powerup != null && currentLevel.TileMap[x, y].Powerup.Type == PowerUpType.Food ? 2 : value;
+                    value = currentLevel.TileMap[x, y].Powerup != null && currentLevel.TileMap[x, y].Powerup.Type == PowerUpType.BigFood ? 3 : value;
+                    value = currentLevel.TileMap[x, y].Powerup != null && currentLevel.TileMap[x, y].Powerup.Type == PowerUpType.GhostEater ? 4 : value;
+                    value = currentLevel.TileMap[x, y].Powerup != null && currentLevel.TileMap[x, y].Powerup.Type == PowerUpType.WallEater ? 5 : value;
+                    value = currentLevel.TileMap[x, y] == currentLevel.PacmanSpawn ? 6 : value;
+                    value = currentLevel.GhostSpawns.Contains(currentLevel.TileMap[x, y]) ? 7 : value;
                     writer.Write(value);
                 }
                 writer.Write('\n');
@@ -116,10 +146,37 @@ namespace PacMan
                         tile.Powerup = new Powerup(PowerUpType.Food, FoodSprite, 100);
                     }
                     break;
+                case BrushType.BigFood:
+                    if (!tile.Blocked)
+                    {
+                        tile.Powerup = new Powerup(PowerUpType.BigFood, BigFoodSprite, 200);
+                    }
+                    break;
                 case BrushType.PowerupGhost:
                     if (!tile.Blocked)
                     {
-                        tile.Powerup = new Powerup(PowerUpType.GhostEater, PowerupGhostSprite , 100);
+                        tile.Powerup = new Powerup(PowerUpType.GhostEater, PowerupGhostSprite, 100);
+                    }
+                    break;
+                case BrushType.PowerupWall:
+                    if (!tile.Blocked)
+                    {
+                        tile.Powerup = new Powerup(PowerUpType.WallEater, PowerupWallEaterSprite, 100);
+                    }
+                    break;
+                case BrushType.PacmanSpawn:
+                    if (!tile.Blocked)
+                    {
+                        currentLevel.PacmanSpawn = tile;
+                    }
+                    break;
+                case BrushType.GhostSpawn:
+                    if (!tile.Blocked)
+                    {
+                        if(!currentLevel.GhostSpawns.Contains(tile))
+                        {
+                            currentLevel.GhostSpawns.Add(tile);
+                        }
                     }
                     break;
             }
@@ -133,8 +190,28 @@ namespace PacMan
                     tile.Blocked = false;                    
                     currentLevel.CalculateSprites();
                     break;
-                case BrushType.Food: case BrushType.PowerupGhost:
+                case BrushType.Food:
+                case BrushType.BigFood: 
+                case BrushType.PowerupGhost:
+                case BrushType.PowerupWall:  
                     tile.Powerup = null;
+                    break;
+                case BrushType.PacmanSpawn:
+                    if(tile == currentLevel.PacmanSpawn)
+                    {
+                        currentLevel.PacmanSpawn = null;
+                    }
+                    break;
+                case BrushType.GhostSpawn:
+                    for(int i = currentLevel.GhostSpawns.Count -1; i >= 0; i--)
+                    {
+                        Tile spawn = currentLevel.GhostSpawns[i];
+                        if(spawn == tile)
+                        {
+                            currentLevel.GhostSpawns.RemoveAt(i);
+                            break;
+                        }
+                    }
                     break;
             }
         }
@@ -151,7 +228,23 @@ namespace PacMan
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.D3))
             {
+                brushType = BrushType.BigFood;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D4))
+            {
                 brushType = BrushType.PowerupGhost;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D5))
+            {
+                brushType = BrushType.PowerupWall;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D6))
+            {
+                brushType = BrushType.PacmanSpawn;
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.D7))
+            {
+                brushType = BrushType.GhostSpawn;
             }
 
             Vector2 mousePoint = new Vector2(Mouse.GetState().X, Mouse.GetState().Y) - levelPosition;
@@ -179,7 +272,7 @@ namespace PacMan
         {
             foreach(Tile tile in currentLevel.TileMap)
             {
-                spriteBatch.Draw(GridTexture, levelPosition + tile.Position, null, Color.White, 0f, Vector2.Zero, Game1.Scale, SpriteEffects.None, 1.0f);
+                spriteBatch.Draw(GridTexture, levelPosition + tile.Position, null, Color.White, 0f, Vector2.Zero, Game1.Scale, SpriteEffects.None, 1.0f);                
 
                 if(hoveredTile == tile)
                 {
@@ -188,16 +281,41 @@ namespace PacMan
                     {
                         if (brushType == BrushType.Food)
                         {
-                            FoodSprite.Draw(spriteBatch, levelPosition + tile.Position + new Vector2(currentLevel.TileSize / 2), Game1.Scale, new Vector2(0.5f));
+                            FoodSprite.Draw(spriteBatch, levelPosition + tile.Position + new Vector2(currentLevel.TileSize / 2), Game1.Scale * 2.0f, new Vector2(0.5f));
+                        }
+                        else if (brushType == BrushType.BigFood)
+                        {
+                            BigFoodSprite.Draw(spriteBatch, levelPosition + tile.Position + new Vector2(currentLevel.TileSize / 2), Game1.Scale * 2.0f, new Vector2(0.5f));
                         }
                         else if (brushType == BrushType.PowerupGhost)
                         {
-                            PowerupGhostSprite.Draw(spriteBatch, levelPosition + tile.Position + new Vector2(currentLevel.TileSize / 2), Game1.Scale, new Vector2(0.5f));
+                            PowerupGhostSprite.Draw(spriteBatch, levelPosition + tile.Position + new Vector2(currentLevel.TileSize / 2), Game1.Scale * 2.0f, new Vector2(0.5f));
+                        }
+                        else if (brushType == BrushType.PowerupWall)
+                        {
+                            PowerupWallEaterSprite.Draw(spriteBatch, levelPosition + tile.Position + new Vector2(currentLevel.TileSize / 2), Game1.Scale * 2.0f, new Vector2(0.5f));
+                        }
+                        else if (brushType == BrushType.PacmanSpawn)
+                        {
+                            PacmanSpawnSprite.Draw(spriteBatch, levelPosition + tile.Position + new Vector2(currentLevel.TileSize / 2), Game1.Scale * 2.0f, new Vector2(0.5f));
+                        }
+                        else if (brushType == BrushType.GhostSpawn)
+                        {
+                            GhostSpawnSprite.Draw(spriteBatch, levelPosition + tile.Position + new Vector2(currentLevel.TileSize / 2), Game1.Scale * 2.0f, new Vector2(0.5f));
                         }
                     }                    
                 }
             }
             currentLevel.Draw(spriteBatch, levelPosition);
+
+            if (currentLevel.PacmanSpawn != null)
+            {
+                PacmanSpawnSprite.Draw(spriteBatch, levelPosition + currentLevel.PacmanSpawn.Position + new Vector2(currentLevel.TileSize / 2), Game1.Scale * 2.0f, new Vector2(0.5f));
+            }
+            foreach(Tile spawn in currentLevel.GhostSpawns)
+            {
+                GhostSpawnSprite.Draw(spriteBatch, levelPosition + spawn.Position + new Vector2(currentLevel.TileSize / 2), Game1.Scale * 2.0f, new Vector2(0.5f));
+            }
         }
 
     }

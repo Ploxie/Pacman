@@ -15,10 +15,16 @@ namespace PacMan
         private Texture2D spritesheetTexture;
         private Texture2D tilesetTexture;
 
+        private SpriteSheet tilesheet;
+        private SpriteSheet spritesheet;
+
         private Editor editor;
         private InGameState game;
 
         private GameState gameState;
+        private KeyboardState lastKeyboardState;
+
+        private string currentLevelPath;
 
         public static readonly Vector2 Scale = new Vector2(1.0f, 1.0f);
 
@@ -46,17 +52,16 @@ namespace PacMan
             
             Tile.NULL_SPRITE = new SpriteSheet(CreateFilledTexture(32, 32, new Color(0, 0, 64, 128))).Sprite;
 
-            SpriteSheet spritesheet = new SpriteSheet(spritesheetTexture, Vector2.Zero, new Vector2(135,112), new Vector2(16, 16));
-            SpriteSheet tilesheet = new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32, 32), 1);
+            this.spritesheet = new SpriteSheet(spritesheetTexture, Vector2.Zero, new Vector2(135,112), new Vector2(16, 16));
+            this.tilesheet = new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32, 32), 1);
 
-            Level level = Level.LoadLevel(tilesheet, spritesheet, "Content\\Level1.txt");
+            this.currentLevelPath = "Content\\Level1.txt";
 
-            Texture2D pixelTexture = CreateFilledTexture(1, 1, Color.White);
-
+            Level level = Level.LoadLevel(tilesheet, spritesheet, currentLevelPath);
+            
             Sprite lifeSprite = spritesheet.GetAt(1, 0);
             HUD hud = new HUD(Window, hudTop, hudBot, scoreTexture, lifeSprite);
-
-
+            
             game = new InGameState(Window, hud, tilesheet, spritesheet);
             game.SetLevel(level);
                                    
@@ -64,9 +69,12 @@ namespace PacMan
             editor.SetLevel(level);
             editor.GridTexture = CreateRectangleTexture(32, 32, new Color(128, 128, 128, 128));
             editor.HighlightTexture = CreateFilledTexture(32, 32, new Color(128,128,128,128));
-            editor.FoodSprite = spritesheet.GetAt(4, 0);
+            editor.FoodSprite = spritesheet.GetAt(3, 0);
+            editor.BigFoodSprite = spritesheet.GetAt(4, 0);
             editor.PowerupGhostSprite = spritesheet.GetAt(0, 6);
-                       
+            editor.PowerupWallEaterSprite = spritesheet.GetAt(1, 6);
+            editor.PacmanSpawnSprite = spritesheet.GetAt(1, 0);
+            editor.GhostSpawnSprite = spritesheet.GetAt(0, 1);
 
             gameState = editor;
 
@@ -122,18 +130,64 @@ namespace PacMan
             return texture;
         }
 
-        protected override void Update(GameTime gameTime)
+        private void SetEditorLevel(string levelPath)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            this.currentLevelPath = levelPath;
+            Level level = Level.LoadLevel(tilesheet, spritesheet, levelPath);
+            editor.SetLevel(level);
+        }
 
-            if(Keyboard.GetState().IsKeyDown(Keys.F1))
+        private void HandleEditorInput(KeyboardState keyboardState)
+        {
+            if(gameState != editor)
             {
-                editor.SaveLevel("Content\\Level1.txt");
+                return;
             }
 
+            if (keyboardState.IsKeyDown(Keys.LeftControl) && (keyboardState.IsKeyDown(Keys.S) && !lastKeyboardState.IsKeyDown(Keys.S)))
+            {
+                editor.SaveLevel(currentLevelPath);
+                game.SetLevel(Level.LoadLevel(tilesheet, spritesheet, currentLevelPath));
+            }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.F12))
+            if (keyboardState.IsKeyDown(Keys.F1) && !lastKeyboardState.IsKeyDown(Keys.F1))
+            {
+                SetEditorLevel("Content\\Level1.txt");
+            }
+            else if (keyboardState.IsKeyDown(Keys.F2) && !lastKeyboardState.IsKeyDown(Keys.F2))
+            {
+                SetEditorLevel("Content\\Level2.txt");
+            }
+            else if (keyboardState.IsKeyDown(Keys.F3) && !lastKeyboardState.IsKeyDown(Keys.F3))
+            {
+                SetEditorLevel("Content\\Level3.txt");
+            }
+            else if (keyboardState.IsKeyDown(Keys.F4) && !lastKeyboardState.IsKeyDown(Keys.F4))
+            {
+                SetEditorLevel("Content\\Level4.txt");
+            }
+            else if (keyboardState.IsKeyDown(Keys.F5) && !lastKeyboardState.IsKeyDown(Keys.F5))
+            {
+                SetEditorLevel("Content\\Level5.txt");
+            }
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            if(lastKeyboardState == null)
+            {
+                lastKeyboardState = Keyboard.GetState();
+            }
+
+            KeyboardState keyboardState = Keyboard.GetState();
+
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || keyboardState.IsKeyDown(Keys.Escape))
+                Exit();
+
+            HandleEditorInput(keyboardState);
+
+
+            if (keyboardState.IsKeyDown(Keys.F12) && !lastKeyboardState.IsKeyDown(Keys.F12))
             {
                 if(gameState == game)
                 {
@@ -147,6 +201,8 @@ namespace PacMan
 
 
             gameState.Update(gameTime);
+
+            lastKeyboardState = Keyboard.GetState();
 
             base.Update(gameTime);
         }

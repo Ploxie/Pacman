@@ -10,17 +10,13 @@ namespace PacMan
 {
     public class Ghost : Character
     {
-        private Pacman pacman;
-
-        public enum AItype {PathFinding, FullyRandom, Patrolling};
-        private AItype type;
-
+        private Pacman pacman;        
         private GhostBehaviour behaviour;
 
         public Ghost(SpriteSheet spriteSheet, Level level, Pacman pacman, GhostBehaviour behaviour) : base(spriteSheet, level) 
         { 
             this.pacman = pacman;
-            direction = new Vector2(0, -1);
+            this.direction = new Vector2(0, -1);
 
             this.behaviour = behaviour;
             this.behaviour.Ghost = this;
