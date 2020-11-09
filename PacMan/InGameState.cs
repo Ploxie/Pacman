@@ -87,10 +87,12 @@ namespace PacMan
         public void Update(GameTime gameTime)
         {
             hud.Update(gameTime);
+
             if (pacman != null)
             {
                 pacman.Update(gameTime);
             }
+
             foreach(Ghost ghost in ghosts)
             {
                 ghost.Update(gameTime);

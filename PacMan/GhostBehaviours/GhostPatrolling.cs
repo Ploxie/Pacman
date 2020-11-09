@@ -15,7 +15,9 @@ namespace PacMan.GhostBehaviours
 
         public override Vector2 CalculateDirection()
         {
-            if (level.GetAt((ghost.TilePosition + new Vector2(level.TileSize / 2)) + (ghost.Direction * level.TileSize)).Blocked || ghost.Direction == Vector2.Zero)
+            Tile tileInDirection = level.GetAt((ghost.Position + new Vector2(level.TileSize / 2)) + (ghost.Direction * level.TileSize));
+
+            if (tileInDirection == null || tileInDirection.Blocked || ghost.Direction == Vector2.Zero)
             {
                 int Dir = Game1.random.Next(0, 4);
                 switch (Dir)

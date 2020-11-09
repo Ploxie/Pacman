@@ -112,7 +112,7 @@ namespace PacMan
             DrawScore(spriteBatch, 1337, highscorePosition, new Vector2(uiScale));
 
             Vector2 scorePosition = new Vector2(scoreWidth, highscorePosition.Y);
-            DrawScore(spriteBatch, 1337, scorePosition, new Vector2(uiScale));
+            DrawScore(spriteBatch, Pacman.Score, scorePosition, new Vector2(uiScale));
 
 
             Rectangle bottomRectangle = new Rectangle(0, window.ClientBounds.Height - bottomHeight, window.ClientBounds.Width, bottomHeight);

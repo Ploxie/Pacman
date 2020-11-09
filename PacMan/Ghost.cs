@@ -24,7 +24,6 @@ namespace PacMan
 
         protected override void UpdateAnimation() 
         {
-            System.Diagnostics.Debug.WriteLine(direction);
             if (direction.X > 0)
             {
                 if (spritesheet.XIndex == 0)

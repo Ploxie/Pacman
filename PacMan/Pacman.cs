@@ -12,6 +12,10 @@ namespace PacMan
 
         private Vector2 currentTilePosition;
         private Vector2 preferredDirection;
+
+        private PowerUpType? activePowerupType;
+        private double powerupTimer;
+
         public Pacman(SpriteSheet spritesheet, Level level, int lives) : base(spritesheet, level)
         {
             Lives = lives;
@@ -30,6 +34,34 @@ namespace PacMan
             set;
         }
 
+        public void ActivatePowerup(GameTime gameTime, Powerup powerup)
+        {
+            this.activePowerupType = powerup.Type;
+            powerupTimer = gameTime.TotalGameTime.TotalMilliseconds + 5000;
+        }
+
+        private void UpdatePowerup(GameTime gameTime)
+        {
+            Tile currentTile = level.GetAt(TilePosition);
+            if (currentTile != null)
+            {
+                currentTile.Blocked = false;
+                level.CalculateSprites();
+            }
+
+            if (activePowerupType == null)
+            {
+                return;
+            }
+
+            this.powerupTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+            if(powerupTimer <= 0)
+            {
+                activePowerupType = null;
+                powerupTimer = 0;
+            }
+        }
+
         protected override void UpdateAnimation()
         {
             if(spritesheet.XIndex == 0)
@@ -40,6 +72,15 @@ namespace PacMan
             {
                 spritesheet.XIndex = 0;
             }
+        }
+
+        protected override bool CanGoDirection(Vector2 direction)
+        {
+            if(activePowerupType != null && activePowerupType == PowerUpType.WallEater)
+            {
+                return true;
+            }
+            return base.CanGoDirection(direction);
         }
 
         public override void Update(GameTime gameTime)
@@ -58,13 +99,20 @@ namespace PacMan
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                preferredDirection = new Vector2(1, 0);                
+                preferredDirection = new Vector2(1, 0);
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                ActivatePowerup(gameTime, new Powerup(PowerUpType.WallEater, null, 100));
             }
 
             ChangeDirection(preferredDirection);
 
             UpdateMovement(gameTime);            
             UpdateAnimationTimer(gameTime);
+
+            UpdatePowerup(gameTime);
 
             if(currentTilePosition != TilePosition)
             {

@@ -59,12 +59,24 @@ namespace PacMan
             get { return direction; }
         }
         
+        protected virtual bool CanGoDirection(Vector2 direction)
+        {
+            Vector2 destinationTilePosition = (TilePosition + new Vector2(level.TileSize / 2)) + (direction * level.TileSize);
+            
+            if (!level.GetAt(destinationTilePosition).Blocked)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public void ChangeDirection(Vector2 direction)
         {
             Vector2 destinationTilePosition = (TilePosition + new Vector2(level.TileSize / 2)) + (direction * level.TileSize) ;
             Vector2 currentTileMiddle = level.GetAt(position).Position + new Vector2(level.TileSize / 2);
 
-            if (Vector2.Distance(position,currentTileMiddle) <= 0.1 && !level.GetAt(destinationTilePosition).Blocked)
+            if (Vector2.Distance(position,currentTileMiddle) <= 0.1 && CanGoDirection(direction))
             {
                 this.position = currentTileMiddle;
                 this.destination = destinationTilePosition;                
@@ -93,17 +105,39 @@ namespace PacMan
         {
             ChangeDirection(new Vector2(x, y));
         }
+
+        private void HandleOutOfBounds()
+        {
+            if (position.X < 0)
+            {
+                position.X += level.Width * level.TileSize;
+            }
+            else if (position.X >= level.Width * level.TileSize)
+            {
+                position.X -= level.Width * level.TileSize;
+            }
+            else if (position.Y < 0)
+            {
+                position.Y += level.Height * level.TileSize;
+            }
+            else if (position.Y >= level.Height * level.TileSize)
+            {
+                position.Y -= level.Height * level.TileSize;
+            }
+        }
         
         protected void UpdateMovement(GameTime gameTime)
         {
-            Vector2 destinationTilePosition = (TilePosition + new Vector2(level.TileSize / 2)) + (direction * level.TileSize);
             Vector2 currentTileMiddle = level.GetAt(position).Position + new Vector2(level.TileSize / 2);
-            if (Vector2.Distance(position, currentTileMiddle) <= 0.1 && level.GetAt(destinationTilePosition).Blocked)
+
+            if (Vector2.Distance(position, currentTileMiddle) <= 0.1 && !CanGoDirection(direction))
             {
                 direction = Vector2.Zero;
             }
 
             position += direction * (speed * level.TileSize) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            HandleOutOfBounds();
 
             if (Vector2.Distance(position, destination) < 1)
             {
