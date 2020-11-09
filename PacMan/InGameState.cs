@@ -81,7 +81,30 @@ namespace PacMan
                 ghostBehaviourIndex++;
                 ghostBehaviourIndex %= 3;
             }
+        }
 
+        private void PowerupCollision()
+        {
+            if (currentLevel.GetAt(pacman.Position).Powerup != null)
+            {
+                pacman.Score += currentLevel.GetAt(pacman.Position).Powerup.Score;
+                currentLevel.GetAt(pacman.Position).Powerup = null;
+
+
+                /*switch (currentLevel.GetAt(pacman.Position).Powerup.Type)
+                {
+                    case PowerUpType.Food:
+                        break;
+                    case PowerUpType.BigFood:
+                        break;
+                    case PowerUpType.WallEater:
+                        break;
+                    case PowerUpType.GhostEater:
+                        break;
+                    default:
+                        break;
+                }*/
+            }
         }
 
         public void Update(GameTime gameTime)
@@ -97,6 +120,8 @@ namespace PacMan
             {
                 ghost.Update(gameTime);
             }
+
+            PowerupCollision();
         }
 
         public void Draw(SpriteBatch spriteBatch)

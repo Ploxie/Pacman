@@ -9,18 +9,18 @@ namespace PacMan
 {
     public class MenuGameState : GameState
     {
-        private SpriteSheet background;
+        private Texture2D background;
         private float msSinceLastFrame = 0;
         private float msPerFrame = 100;
 
-        private enum Option { StartGame, SwitchCharacter, EndGame }
+        private enum Option { StartGame, Editor, EndGame }
         private Option CurrentOption = Option.StartGame;
         private double clickTimer;
 
         private SpriteFont menuFont;
 
         private Vector2 startPosistion;
-        private Vector2 switchPosition;
+        private Vector2 editorPosition;
         private Vector2 endPosition;
 
         private GameWindow window;
@@ -32,10 +32,22 @@ namespace PacMan
 
             this.window = window;
 
-            background = new SpriteSheet(start, new Vector2(0, 0), new Vector2(2510, 5936), new Vector2(502, 742));
+            background = start;
         }
 
         public bool Quit
+        {
+            get;
+            set;
+        }
+
+        public bool Play
+        {
+            get;
+            set;
+        }
+
+        public bool Editor
         {
             get;
             set;
@@ -47,9 +59,9 @@ namespace PacMan
             {
                 if (CurrentOption == Option.StartGame)
                 {
-                    CurrentOption = Option.SwitchCharacter;
+                    CurrentOption = Option.Editor;
                 }
-                else if (CurrentOption == Option.SwitchCharacter)
+                else if (CurrentOption == Option.Editor)
                 {
                     CurrentOption = Option.EndGame;
                 }
@@ -65,13 +77,13 @@ namespace PacMan
                 {
                     CurrentOption = Option.EndGame;
                 }
-                else if (CurrentOption == Option.SwitchCharacter)
+                else if (CurrentOption == Option.Editor)
                 {
                     CurrentOption = Option.StartGame;
                 }
                 else if (CurrentOption == Option.EndGame)
                 {
-                    CurrentOption = Option.SwitchCharacter;
+                    CurrentOption = Option.Editor;
                 }
                 clickTimer = 100;
             }
@@ -79,11 +91,11 @@ namespace PacMan
             {
                 if (CurrentOption == Option.StartGame)
                 {
-                    
+                    Play = true;
                 }
-                else if (CurrentOption == Option.SwitchCharacter)
+                else if (CurrentOption == Option.Editor)
                 {
-                   
+                    Editor = true;
                 }
                 else if (CurrentOption == Option.EndGame)
                 {
@@ -91,50 +103,34 @@ namespace PacMan
                 }
                 clickTimer = 100;
             }
-            if (msSinceLastFrame >= msPerFrame)
-            {
-                background.XIndex++;
-                if (background.XIndex >= 4)
-                {
-                    background.XIndex = 0;
-                    background.YIndex++;
-                }
-                if (background.YIndex == 7 && background.XIndex == 3)
-                {
-                    background.YIndex = 0;
-                    background.XIndex = 0;
-                }
-                msSinceLastFrame = 0;
-            }
-            msSinceLastFrame += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             clickTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
         }
 
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            startPosistion = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 5.6f);
-            switchPosition = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 4.6f);
-            endPosition = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 3.9f);
+            startPosistion = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 1.7f);
+            editorPosition = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 1.6f);
+            endPosition = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 1.5f);
 
 
-            background.Sprite.Draw(spriteBatch, Vector2.Zero, new Vector2(2.5f, 1.5f));
+            spriteBatch.Draw(background, new Vector2(50,100), Color.White);
             if (CurrentOption == Option.StartGame)
             {
                 spriteBatch.DrawString(menuFont, "Start Game", startPosistion, Color.Red);
-                spriteBatch.DrawString(menuFont, "Editor", switchPosition, Color.Black);
-                spriteBatch.DrawString(menuFont, "End Game", endPosition, Color.Black);
+                spriteBatch.DrawString(menuFont, "Level Editor", editorPosition, Color.White);
+                spriteBatch.DrawString(menuFont, "End Game", endPosition, Color.White);
             }
-            else if (CurrentOption == Option.SwitchCharacter)
+            else if (CurrentOption == Option.Editor)
             {
-                spriteBatch.DrawString(menuFont, "Start Game", startPosistion, Color.Black);
-                spriteBatch.DrawString(menuFont, "Editor", switchPosition, Color.Red);
-                spriteBatch.DrawString(menuFont, "End Game", endPosition, Color.Black);
+                spriteBatch.DrawString(menuFont, "Start Game", startPosistion, Color.White);
+                spriteBatch.DrawString(menuFont, "Level Editor", editorPosition, Color.Red);
+                spriteBatch.DrawString(menuFont, "End Game", endPosition, Color.White);
             }
             else if (CurrentOption == Option.EndGame)
             {
-                spriteBatch.DrawString(menuFont, "Start Game", startPosistion, Color.Black);
-                spriteBatch.DrawString(menuFont, "Editor", switchPosition, Color.Black);
+                spriteBatch.DrawString(menuFont, "Start Game", startPosistion, Color.White);
+                spriteBatch.DrawString(menuFont, "Level Editor", editorPosition, Color.White);
                 spriteBatch.DrawString(menuFont, "End Game", endPosition, Color.Red);
             }
         }
