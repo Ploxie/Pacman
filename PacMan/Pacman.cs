@@ -13,7 +13,7 @@ namespace PacMan
         private Vector2 currentTilePosition;
         private Vector2 preferredDirection;
 
-        private PowerUpType? activePowerupType;
+        private PowerUpType? activedPowerupType;
         private double powerupTimer;
 
         public Pacman(SpriteSheet spritesheet, Level level, int lives) : base(spritesheet, level)
@@ -36,7 +36,7 @@ namespace PacMan
 
         public void ActivatePowerup(GameTime gameTime, Powerup powerup)
         {
-            this.activePowerupType = powerup.Type;
+            this.activedPowerupType = powerup.Type;
             powerupTimer = gameTime.TotalGameTime.TotalMilliseconds + 5000;
         }
 
@@ -49,7 +49,7 @@ namespace PacMan
                 level.CalculateSprites();
             }
 
-            if (activePowerupType == null)
+            if (activedPowerupType == null)
             {
                 return;
             }
@@ -57,7 +57,7 @@ namespace PacMan
             this.powerupTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
             if(powerupTimer <= 0)
             {
-                activePowerupType = null;
+                activedPowerupType = null;
                 powerupTimer = 0;
             }
         }
@@ -76,7 +76,7 @@ namespace PacMan
 
         protected override bool CanGoDirection(Vector2 direction)
         {
-            if(activePowerupType != null && activePowerupType == PowerUpType.WallEater)
+            if(activedPowerupType != null && activedPowerupType == PowerUpType.WallEater)
             {
                 return true;
             }
@@ -127,7 +127,14 @@ namespace PacMan
             rotation = facing == FaceDirection.Down ? (float)(Math.PI / 2) : rotation;
             rotation = facing == FaceDirection.Left ? (float)(Math.PI / 2) * 2.0f : rotation;
             rotation = facing == FaceDirection.Up ? (float)(Math.PI / 2) * 3.0f : rotation;
-            spritesheet.Sprite.Draw(spriteBatch, offset + Position, Game1.Scale * 2, new Vector2(0.5f, 0.5f), rotation, SpriteEffects.None);
+
+            Color color = Color.White;
+            if(activedPowerupType != null && activedPowerupType == PowerUpType.WallEater)
+            {
+                color = Color.Red;
+            }
+
+            spritesheet.Sprite.Draw(spriteBatch, offset + Position, Game1.Scale * 2, new Vector2(0.5f, 0.5f), rotation, SpriteEffects.None,color);
         }
         
     }
