@@ -6,10 +6,10 @@ using System.Text;
 namespace PacMan.GhostBehaviours
 {
 
-    public class GhostPathfinding : GhostBehaviour
+    public class GhostRunAwayBehaviour : GhostBehaviour
     {
 
-        public GhostPathfinding(Pacman pacman, Level level) : base(pacman, level)
+        public GhostRunAwayBehaviour(Pacman pacman, Level level) : base(pacman, level)
         {
 
         }
@@ -24,21 +24,23 @@ namespace PacMan.GhostBehaviours
             float xDist = ghost.Position.X - pacman.Position.X;
             float yDist = ghost.Position.Y - pacman.Position.Y;
 
-            if (yDist > 0 && GetTileInDirection(0, -1) != null && !GetTileInDirection(0, -1).Blocked)
-            {
-                return new Vector2(0, -1);
-            }
-            else if (yDist < 0 && GetTileInDirection(0, 1) != null && !GetTileInDirection(0, 1).Blocked)
+            
+
+            if (yDist > 0 && GetTileInDirection(0, 1) != null && !GetTileInDirection(0, 1).Blocked)
             {
                 return new Vector2(0, 1);
             }
-            else if (xDist > 0 && GetTileInDirection(-1, 0) != null && !GetTileInDirection(-1, 0).Blocked)
+            else if (yDist < 0 && GetTileInDirection(0, -1) != null && !GetTileInDirection(0, -1).Blocked)
             {
-                return new Vector2(-1, 0);
+                return new Vector2(0, -1);
             }
-            else if (xDist < 0 && GetTileInDirection(1, 0) != null && !GetTileInDirection(1, 0).Blocked)
+            else if (xDist > 0 && GetTileInDirection(1, 0) != null && !GetTileInDirection(1, 0).Blocked)
             {
                 return new Vector2(1, 0);
+            }
+            else if (xDist < 0 && GetTileInDirection(-1, 0) != null && !GetTileInDirection(-1, 0).Blocked)
+            {
+                return new Vector2(-1, 0);
             }
 
             if (GetTileInDirection(ghost.Direction.X, ghost.Direction.Y).Blocked)
@@ -54,7 +56,6 @@ namespace PacMan.GhostBehaviours
                     return clockWise;
                 }
             }
-
             return ghost.Direction;
         }
 

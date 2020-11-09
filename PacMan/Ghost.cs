@@ -12,6 +12,7 @@ namespace PacMan
     {
         private Pacman pacman;        
         private GhostBehaviour behaviour;
+        private GhostBehaviour runBehaviour;
 
         public Ghost(SpriteSheet spriteSheet, Level level, Pacman pacman, GhostBehaviour behaviour) : base(spriteSheet, level) 
         { 
@@ -20,6 +21,14 @@ namespace PacMan
 
             this.behaviour = behaviour;
             this.behaviour.Ghost = this;
+            this.runBehaviour = new GhostRunAwayBehaviour(pacman, level);
+            this.runBehaviour.Ghost = this;
+        }
+
+        public bool Dead
+        {
+            get;
+            set;
         }
 
         protected override void UpdateAnimation() 
@@ -73,11 +82,24 @@ namespace PacMan
 
         public override void Update(GameTime gameTime)
         {
-
-            ChangeDirection(behaviour.CalculateDirection());
+            if (pacman.ActivePowerupType != PowerUpType.GhostEater)
+            {
+                ChangeDirection(behaviour.CalculateDirection());
+            }
+            else
+            {
+                ChangeDirection(runBehaviour.CalculateDirection());
+            }
+            
 
             UpdateMovement(gameTime);
             UpdateAnimationTimer(gameTime);
+
+            if (Dead)
+            {
+                position = level.GhostSpawns[0].Position + new Vector2(level.TileSize/2, level.TileSize/2);
+                Dead = false;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)

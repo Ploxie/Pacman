@@ -83,27 +83,40 @@ namespace PacMan
             }
         }
 
-        private void PowerupCollision()
+        private void Collision(GameTime gameTime)
         {
-            if (currentLevel.GetAt(pacman.Position).Powerup != null)
+            Tile currentTile = currentLevel.GetAt(pacman.Position);
+            if (currentTile.Powerup != null)
             {
                 pacman.Score += currentLevel.GetAt(pacman.Position).Powerup.Score;
-                currentLevel.GetAt(pacman.Position).Powerup = null;
+                
 
 
-                /*switch (currentLevel.GetAt(pacman.Position).Powerup.Type)
+                switch (currentTile.Powerup.Type)
                 {
-                    case PowerUpType.Food:
-                        break;
-                    case PowerUpType.BigFood:
-                        break;
                     case PowerUpType.WallEater:
+                        pacman.ActivatePowerup(gameTime, currentTile.Powerup);
                         break;
                     case PowerUpType.GhostEater:
+                        pacman.ActivatePowerup(gameTime, currentTile.Powerup);
                         break;
                     default:
                         break;
-                }*/
+                }
+                currentTile.Powerup = null;
+            }
+
+            foreach (Ghost ghost in ghosts)
+            {
+                if (ghost.TilePosition == pacman.TilePosition && pacman.ActivePowerupType != PowerUpType.GhostEater)
+                {
+                    pacman.LoseLives();
+                }
+                else if (ghost.TilePosition == pacman.TilePosition && pacman.ActivePowerupType == PowerUpType.GhostEater)
+                {
+                    ghost.Dead = true;
+                    pacman.Score += 200;
+                }
             }
         }
 
@@ -121,7 +134,7 @@ namespace PacMan
                 ghost.Update(gameTime);
             }
 
-            PowerupCollision();
+            Collision(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)

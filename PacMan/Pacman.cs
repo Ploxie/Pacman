@@ -34,6 +34,17 @@ namespace PacMan
             set;
         }
 
+        public PowerUpType? ActivePowerupType
+        {
+            get { return activedPowerupType; }
+        }
+
+        public void LoseLives()
+        {
+            Lives--;
+            position = level.PacmanSpawn.Position + new Vector2(level.TileSize / 2, level.TileSize / 2);
+        }
+
         public void ActivatePowerup(GameTime gameTime, Powerup powerup)
         {
             this.activedPowerupType = powerup.Type;
@@ -132,6 +143,10 @@ namespace PacMan
             if(activedPowerupType != null && activedPowerupType == PowerUpType.WallEater)
             {
                 color = Color.Red;
+            }
+            else if (activedPowerupType != null && activedPowerupType == PowerUpType.GhostEater)
+            {
+                color = Color.LawnGreen;
             }
 
             spritesheet.Sprite.Draw(spriteBatch, offset + Position, Game1.Scale * 2, new Vector2(0.5f, 0.5f), rotation, SpriteEffects.None,color);
