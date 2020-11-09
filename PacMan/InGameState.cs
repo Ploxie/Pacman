@@ -83,7 +83,7 @@ namespace PacMan
             }
         }
 
-        private void Collision(GameTime gameTime)
+        private void Collision()
         {
             Tile currentTile = currentLevel.GetAt(pacman.Position);
             if (currentTile.Powerup != null)
@@ -95,10 +95,10 @@ namespace PacMan
                 switch (currentTile.Powerup.Type)
                 {
                     case PowerUpType.WallEater:
-                        pacman.ActivatePowerup(gameTime, currentTile.Powerup);
+                        pacman.ActivatePowerup(currentTile.Powerup);
                         break;
                     case PowerUpType.GhostEater:
-                        pacman.ActivatePowerup(gameTime, currentTile.Powerup);
+                        pacman.ActivatePowerup(currentTile.Powerup);
                         break;
                     default:
                         break;
@@ -134,7 +134,7 @@ namespace PacMan
                 ghost.Update(gameTime);
             }
 
-            Collision(gameTime);
+            Collision();
         }
 
         public void Draw(SpriteBatch spriteBatch)

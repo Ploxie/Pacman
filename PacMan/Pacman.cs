@@ -45,10 +45,10 @@ namespace PacMan
             position = level.PacmanSpawn.Position + new Vector2(level.TileSize / 2, level.TileSize / 2);
         }
 
-        public void ActivatePowerup(GameTime gameTime, Powerup powerup)
+        public void ActivatePowerup(Powerup powerup)
         {
             this.activedPowerupType = powerup.Type;
-            powerupTimer = gameTime.TotalGameTime.TotalMilliseconds + 5000;
+            powerupTimer = 5000;
         }
 
         private void UpdatePowerup(GameTime gameTime)
@@ -60,17 +60,12 @@ namespace PacMan
                 level.CalculateSprites();
             }
 
-            if (activedPowerupType == null)
-            {
-                return;
-            }
-
             this.powerupTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-            if(powerupTimer <= 0)
+            if (powerupTimer <= 0)
             {
                 activedPowerupType = null;
                 powerupTimer = 0;
-            }
+            }            
         }
 
         protected override void UpdateAnimation()
@@ -115,7 +110,7 @@ namespace PacMan
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
-                ActivatePowerup(gameTime, new Powerup(PowerUpType.WallEater, null, 100));
+                ActivatePowerup(new Powerup(PowerUpType.WallEater, null, 100));
             }
 
             ChangeDirection(preferredDirection);
