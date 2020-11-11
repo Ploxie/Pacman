@@ -86,16 +86,18 @@ namespace PacMan
             hud.Pacman = pacman;
             this.levelPosition = new Vector2((window.ClientBounds.Width / 2) - (level.PixelWidth / 2), (window.ClientBounds.Height / 2) - (level.PixelHeight / 2));
 
-            SpriteSheet redGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 16), new Vector2(128, 16), new Vector2(16, 16));
-            SpriteSheet pinkGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 32), new Vector2(128, 16), new Vector2(16, 16));
-            SpriteSheet blueGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 48), new Vector2(128, 16), new Vector2(16, 16));
-            SpriteSheet orangeGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 64), new Vector2(128, 16), new Vector2(16, 16));
-            SpriteSheet runGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 80), new Vector2(64, 16), new Vector2(16, 16));
+            
 
             ghosts.Clear();
             int ghostBehaviourIndex = 0;
             foreach(Tile spawn in level.GhostSpawns)
             {
+                SpriteSheet redGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 16), new Vector2(128, 16), new Vector2(16, 16));
+                SpriteSheet pinkGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 32), new Vector2(128, 16), new Vector2(16, 16));
+                SpriteSheet blueGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 48), new Vector2(128, 16), new Vector2(16, 16));
+                SpriteSheet orangeGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 64), new Vector2(128, 16), new Vector2(16, 16));
+                SpriteSheet runGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 80), new Vector2(64, 16), new Vector2(16, 16));
+
                 GhostBehaviour behaviour = null;
                 SpriteSheet ghostSpritesheet = null;
                 switch(ghostBehaviourIndex)
