@@ -62,8 +62,16 @@ namespace PacMan
             currentLevel = level;
             hud.CurrentLevel = level;
 
+
+            int oldScore = 0;
+            if(pacman != null)
+            {
+                oldScore = pacman.Score;
+            }
+
             SpriteSheet pacmanSheet = new SpriteSheet(characterSheet.Texture, Vector2.Zero, new Vector2(80, 16), new Vector2(16, 16));
             pacman = new Pacman(pacmanSheet, level, 5);
+            pacman.Score = oldScore;
 
             Tile pacmanSpawnTile = level.GetTile(1, 1);
             if(level.PacmanSpawn != null)
@@ -81,6 +89,7 @@ namespace PacMan
             SpriteSheet blueGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 48), new Vector2(128, 16), new Vector2(16, 16));
             SpriteSheet orangeGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 64), new Vector2(128, 16), new Vector2(16, 16));
 
+            ghosts.Clear();
             int ghostBehaviourIndex = 0;
             foreach(Tile spawn in level.GhostSpawns)
             {
@@ -94,7 +103,7 @@ namespace PacMan
                         break;
                     case 1:
                         behaviour = new GhostPathfinding(pacman, level);
-                        ghostSpritesheet = pinkGhostSheet;
+                        ghostSpritesheet = orangeGhostSheet;
                         break;
                     default:
                         behaviour = new GhostFullyRandom(pacman, level);

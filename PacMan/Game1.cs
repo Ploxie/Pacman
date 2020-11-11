@@ -31,6 +31,8 @@ namespace PacMan
         private KeyboardState lastKeyboardState;
 
         private HUD hud;
+        private int levelIndex;
+        private List<string> levelPaths;
         private string currentLevelPath;
         private List<int> highscores;
         private bool savedHighscores;
@@ -67,7 +69,16 @@ namespace PacMan
             this.spritesheet = new SpriteSheet(spritesheetTexture, Vector2.Zero, new Vector2(135,112), new Vector2(16, 16));
             this.tilesheet = new SpriteSheet(tilesetTexture, Vector2.Zero, new Vector2(128, 128), new Vector2(32, 32), 1);
 
-            this.currentLevelPath = "Content\\Level1.txt";
+            this.levelPaths = new List<string>() 
+            {
+                "Content\\Level1.txt",
+                "Content\\Level2.txt",
+                "Content\\Level3.txt",
+                "Content\\Level4.txt",
+                "Content\\Level5.txt"
+            };
+
+            this.currentLevelPath = this.levelPaths[0];
 
             Level level = Level.LoadLevel(tilesheet, spritesheet, currentLevelPath);
 
@@ -205,23 +216,23 @@ namespace PacMan
 
             if (keyboardState.IsKeyDown(Keys.F1) && !lastKeyboardState.IsKeyDown(Keys.F1))
             {
-                SetEditorLevel("Content\\Level1.txt");
+                SetEditorLevel(levelPaths[0]);
             }
             else if (keyboardState.IsKeyDown(Keys.F2) && !lastKeyboardState.IsKeyDown(Keys.F2))
             {
-                SetEditorLevel("Content\\Level2.txt");
+                SetEditorLevel(levelPaths[1]);
             }
             else if (keyboardState.IsKeyDown(Keys.F3) && !lastKeyboardState.IsKeyDown(Keys.F3))
             {
-                SetEditorLevel("Content\\Level3.txt");
+                SetEditorLevel(levelPaths[2]);
             }
             else if (keyboardState.IsKeyDown(Keys.F4) && !lastKeyboardState.IsKeyDown(Keys.F4))
             {
-                SetEditorLevel("Content\\Level4.txt");
+                SetEditorLevel(levelPaths[3]);
             }
             else if (keyboardState.IsKeyDown(Keys.F5) && !lastKeyboardState.IsKeyDown(Keys.F5))
             {
-                SetEditorLevel("Content\\Level5.txt");
+                SetEditorLevel(levelPaths[4]);
             }
         }
 
@@ -275,14 +286,25 @@ namespace PacMan
 
             if (game.FoodCollected && !savedHighscores)
             {
-                menu.WinScreen = true;
-                highscores.Add(hud.Pacman.Score);
-                highscores.Sort((o0, o1) => o1 - o0);
-                menu.Highscores = highscores;
-                SaveHighscores();
-                gameState = menu;
-                menu.CurrentOption = MenuGameState.Option.RestartGame;
-                savedHighscores = true;
+                levelIndex++;
+                if(levelIndex >= levelPaths.Count)
+                {
+                    // No more levels, you won the game!
+                    menu.WinScreen = true;
+                    gameState = menu;
+                    menu.CurrentOption = MenuGameState.Option.RestartGame;
+
+                    highscores.Add(hud.Pacman.Score);
+                    highscores.Sort((o0, o1) => o1 - o0);
+                    menu.Highscores = highscores;
+                    SaveHighscores();
+                    savedHighscores = true;
+                }
+                else
+                {
+                    // Go to next level
+                    game.SetLevel(Level.LoadLevel(tilesheet, spritesheet, levelPaths[levelIndex]));
+                }                
             }
 
             if (hud.Pacman.Lives <= 0 && !savedHighscores)
