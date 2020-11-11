@@ -47,7 +47,9 @@ namespace PacMan
 
         private List<GainedScore> gainedScores = new List<GainedScore>();
 
-        public HUD(GameWindow window, int topHeight, int bottomHeight, Texture2D numberTexture, Sprite lifeSprite)
+        private int highscore;
+
+        public HUD(GameWindow window, int topHeight, int bottomHeight, Texture2D numberTexture, Sprite lifeSprite, int highscore)
         {
             this.window = window;
             this.topHeight = topHeight;
@@ -59,6 +61,7 @@ namespace PacMan
             this.scoresheet = new SpriteSheet(numberTexture, new Vector2(132, 1), new Vector2(35, 14), new Vector2(7, 7));
 
             this.lifeSprite = lifeSprite;
+            this.highscore = highscore;
         }
 
         public Level CurrentLevel
@@ -78,12 +81,19 @@ namespace PacMan
             get;
         }
 
+        public int Highscore
+        {
+            get
+            {
+                return highscore > Pacman.Score ? highscore : Pacman.Score;
+            }
+        }
+
         public void AddGainedScore(GainedScore gainedScore)
         {
             this.gainedScores.Add(gainedScore);
         }
-
-
+        
         private Sprite GetNumberSprite(int number)
         {
             if (number <= 0 || number > 9)
@@ -157,7 +167,7 @@ namespace PacMan
             float scoreWidth = 6.0f * 7.0f * uiScale + 6.0f;
             float scoreHeight = 7.0f * uiScale;
             Vector2 highscorePosition = new Vector2(topHalfPosition.X + (HighscoreSprite.SpriteSize.X * uiScale) - scoreWidth, topHalfPosition.Y + ((HighscoreSprite.SpriteSize.Y * uiScale)) + 10);
-            DrawScore(spriteBatch, 1337, highscorePosition, new Vector2(uiScale));
+            DrawScore(spriteBatch, Highscore, highscorePosition, new Vector2(uiScale));
 
             Vector2 scorePosition = new Vector2(scoreWidth, highscorePosition.Y);
             DrawScore(spriteBatch, Pacman.Score, scorePosition, new Vector2(uiScale));

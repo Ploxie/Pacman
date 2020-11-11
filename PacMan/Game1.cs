@@ -70,9 +70,11 @@ namespace PacMan
             this.currentLevelPath = "Content\\Level1.txt";
 
             Level level = Level.LoadLevel(tilesheet, spritesheet, currentLevelPath);
-            
+
+            highscores = new List<int>();
+            int highscore = LoadHighscore();
             Sprite lifeSprite = spritesheet.GetAt(1, 0);
-            hud = new HUD(Window, hudTop, hudBot, scoreTexture, lifeSprite);
+            hud = new HUD(Window, hudTop, hudBot, scoreTexture, lifeSprite, highscore);
             
             game = new InGameState(Window, hud, tilesheet, spritesheet);
             game.SetLevel(level);
@@ -88,14 +90,11 @@ namespace PacMan
             editor.PacmanSpawnSprite = spritesheet.GetAt(1, 0);
             editor.GhostSpawnSprite = spritesheet.GetAt(0, 1);
 
-            highscores = new List<int>();
-            LoadHighscore();
+            
             menu = new MenuGameState(hud, pacmanBackgroundTexture, menuFont, Window);
             menu.Highscores = highscores;
 
-            gameState = menu;
-
-            
+            gameState = menu;            
         }
 
         private int LoadHighscore()
