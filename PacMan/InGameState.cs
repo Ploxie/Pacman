@@ -88,6 +88,7 @@ namespace PacMan
             SpriteSheet pinkGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 32), new Vector2(128, 16), new Vector2(16, 16));
             SpriteSheet blueGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 48), new Vector2(128, 16), new Vector2(16, 16));
             SpriteSheet orangeGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 64), new Vector2(128, 16), new Vector2(16, 16));
+            SpriteSheet runGhostSheet = new SpriteSheet(characterSheet.Texture, new Vector2(0, 80), new Vector2(64, 16), new Vector2(16, 16));
 
             ghosts.Clear();
             int ghostBehaviourIndex = 0;
@@ -111,7 +112,7 @@ namespace PacMan
                         break;
                 }
 
-                Ghost ghost = new Ghost(ghostSpritesheet, level, pacman, behaviour);
+                Ghost ghost = new Ghost(ghostSpritesheet,runGhostSheet, level, pacman, behaviour);
                 ghost.Position = spawn.Position + new Vector2(level.TileSize / 2);
                 ghosts.Add(ghost);
                 ghostBehaviourIndex++;

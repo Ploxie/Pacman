@@ -13,8 +13,10 @@ namespace PacMan
         private Pacman pacman;        
         private GhostBehaviour behaviour;
         private GhostBehaviour runBehaviour;
+        private SpriteSheet defaultSpriteSheet;
+        private SpriteSheet runSpriteSheet;
 
-        public Ghost(SpriteSheet spriteSheet, Level level, Pacman pacman, GhostBehaviour behaviour) : base(spriteSheet, level) 
+        public Ghost(SpriteSheet spriteSheet,SpriteSheet runSpriteSheet, Level level, Pacman pacman, GhostBehaviour behaviour) : base(spriteSheet, level) 
         { 
             this.pacman = pacman;
             this.direction = new Vector2(0, -1);
@@ -23,6 +25,9 @@ namespace PacMan
             this.behaviour.Ghost = this;
             this.runBehaviour = new GhostRunAwayBehaviour(pacman, level);
             this.runBehaviour.Ghost = this;
+
+            this.defaultSpriteSheet = spriteSheet;
+            this.runSpriteSheet = runSpriteSheet;
         }
 
         public bool Dead
@@ -84,10 +89,12 @@ namespace PacMan
         {
             if (pacman.ActivePowerupType != PowerUpType.GhostEater)
             {
+                this.spritesheet = defaultSpriteSheet;
                 ChangeDirection(behaviour.CalculateDirection());
             }
             else
             {
+                this.spritesheet = runSpriteSheet;
                 ChangeDirection(runBehaviour.CalculateDirection());
             }
             
