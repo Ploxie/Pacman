@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection.Emit;
 
 namespace PacMan
 {
@@ -17,6 +18,8 @@ namespace PacMan
         private Texture2D spritesheetTexture;
         private Texture2D tilesetTexture;
         private Texture2D pacmanBackgroundTexture;
+        private Texture2D pacmanLoseScreen;
+        private Texture2D pacmanWinScreen;
 
         private SpriteFont menuFont;
 
@@ -58,6 +61,8 @@ namespace PacMan
             spritesheetTexture = Content.Load<Texture2D>("SpriteSheet");
             tilesetTexture = Content.Load<Texture2D>("Tileset");
             pacmanBackgroundTexture = Content.Load<Texture2D>("pacmanBackground");
+            pacmanLoseScreen = Content.Load<Texture2D>("LoseScreen");
+            pacmanWinScreen = Content.Load<Texture2D>("WinScreen");
             Texture2D scoreTexture = Content.Load<Texture2D>("score-numbers");
 
             menuFont = Content.Load<SpriteFont>("menuFont");
@@ -90,7 +95,7 @@ namespace PacMan
 
             highscores = new List<int>();
             LoadHighscore();
-            menu = new MenuGameState(hud, pacmanBackgroundTexture, menuFont, Window);
+            menu = new MenuGameState(hud, pacmanBackgroundTexture, pacmanWinScreen, pacmanLoseScreen, menuFont, Window);
             menu.Highscores = highscores;
 
             gameState = menu;
@@ -266,13 +271,10 @@ namespace PacMan
                 }
             }
 
-
+            
             gameState.Update(gameTime);
-            if (hud.CurrentLevel.NeedsReset)
-            {
-                gameState = game;
-                menu.WinScreen = false;
-            }
+
+
 
             if (game.FoodCollected && !savedHighscores)
             {
@@ -285,7 +287,6 @@ namespace PacMan
                 menu.CurrentOption = MenuGameState.Option.RestartGame;
                 savedHighscores = true;
             }
-
             if (hud.Pacman.Lives <= 0 && !savedHighscores)
             {
                 highscores.Add(hud.Pacman.Score);
@@ -295,11 +296,15 @@ namespace PacMan
                 gameState = menu;
                 menu.CurrentOption = MenuGameState.Option.RestartGame;
                 savedHighscores = true;
+            }  
+            if (menu.Restart)
+            {
+                gameState = game;
+                game.SetLevel(Level.LoadLevel(tilesheet, spritesheet, currentLevelPath));
+                savedHighscores = false;
+                menu.Restart = false;
             }
-            
             lastKeyboardState = Keyboard.GetState();
-
-            base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -309,8 +314,6 @@ namespace PacMan
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp);
             gameState.Draw(spriteBatch);
             spriteBatch.End();
-
-            base.Draw(gameTime);
         }
     }
 }

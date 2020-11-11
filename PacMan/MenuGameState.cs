@@ -10,8 +10,8 @@ namespace PacMan
     public class MenuGameState : GameState
     {
         private Texture2D background;
-        private float msSinceLastFrame = 0;
-        private float msPerFrame = 100;
+        private Texture2D winScreen;
+        private Texture2D loseScreen;
 
         public enum Option { StartGame, Editor, EndGame, RestartGame }
         public Option CurrentOption = Option.StartGame;
@@ -27,7 +27,7 @@ namespace PacMan
         private GameWindow window;
         private HUD hud;
 
-        public MenuGameState(HUD hud, Texture2D start, SpriteFont font, GameWindow window)
+        public MenuGameState(HUD hud, Texture2D background, Texture2D winScreen, Texture2D loseScreen, SpriteFont font, GameWindow window)
         {
             this.hud = hud;
             this.menuFont = font;
@@ -35,8 +35,17 @@ namespace PacMan
 
             this.window = window;
 
-            background = start;
+            this.background = background;
+            this.winScreen = winScreen;
+            this.loseScreen = loseScreen;
+
             this.Highscores = new List<int>();
+        }
+
+        public bool Restart
+        {
+            get;
+            set;
         }
 
         public bool Quit
@@ -180,7 +189,8 @@ namespace PacMan
             {
                 if (CurrentOption == Option.RestartGame)
                 {
-                    hud.CurrentLevel.NeedsReset = true;
+                    WinScreen = false;
+                    Restart = true;
                 }
                 else if (CurrentOption == Option.EndGame)
                 {
@@ -233,21 +243,22 @@ namespace PacMan
 
         public void GameOverDraw(SpriteBatch spriteBatch)
         {
-            restartPosition = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 1.7f + 100);
+            restartPosition = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 1.6f + 100);
             endPosition = new Vector2(window.ClientBounds.Width / 2.5f, window.ClientBounds.Height / 1.5f + 100);
 
             if (WinScreen)
             {
-                spriteBatch.Draw(background, new Vector2(50, 100), Color.White);
+                spriteBatch.Draw(winScreen, new Vector2(190, 80), null, Color.White, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1.0f);
             }
             if (LoseScreen)
             {
-                spriteBatch.Draw(background, new Vector2(50, 100), Color.White);
+                spriteBatch.Draw(loseScreen, new Vector2(50, 100), Color.White);
             }
             if (CurrentOption == Option.RestartGame)
             {
                 spriteBatch.DrawString(menuFont, "Restart Game", restartPosition, Color.Red);
                 spriteBatch.DrawString(menuFont, "End Game", endPosition, Color.White);
+                
             }
             else if (CurrentOption == Option.EndGame)
             {

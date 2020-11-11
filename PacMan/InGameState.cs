@@ -28,6 +28,15 @@ namespace PacMan
             this.hud = hud;
             this.tilesheet = tilesheet;
             this.characterSheet = characterSheet;
+
+        }
+
+        public Level CurrentLevel
+        {
+            get
+            {
+                return currentLevel;
+            }
         }
 
         public bool FoodCollected
@@ -49,14 +58,6 @@ namespace PacMan
             }
         }
 
-        public void ResetGhosts()
-        {
-            foreach (Ghost ghost in ghosts)
-            {
-                ghost.Position = currentLevel.GhostSpawns[Game1.random.Next(currentLevel.GhostSpawns.Count)].Position;
-            }
-        }
-
         public void SetLevel(Level level)
         {
             currentLevel = level;
@@ -69,6 +70,7 @@ namespace PacMan
             if(level.PacmanSpawn != null)
             {
                 pacmanSpawnTile = level.PacmanSpawn;
+
             }
 
             pacman.Position = pacmanSpawnTile.Position + new Vector2(level.TileSize / 2);
@@ -149,13 +151,6 @@ namespace PacMan
 
         public void Update(GameTime gameTime)
         {
-            if (currentLevel.NeedsReset && pacman != null)
-            {
-                ResetGhosts();
-                pacman.Lives = 3;
-                int tileSize = currentLevel.TileSize;
-                pacman.Position = currentLevel.PacmanSpawn.Position + new Vector2(tileSize / 2, tileSize / 2);
-            }
 
             if (pacman != null)
             {

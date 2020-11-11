@@ -14,14 +14,16 @@ namespace PacMan
 
         private Tile[,] tileMap;
         private SpriteSheet tileSheet;
+        private SpriteSheet spriteSheet;
 
         private int width, height;
         private int tileSize;
                 
-        private Level(SpriteSheet tileSheet, SpriteSheet sprites, int columns, int rows, int tileSize)
+        private Level(SpriteSheet tileSheet, SpriteSheet sprites, int columns, int rows, int tileSize, string filePath)
         {
             this.tileSize = tileSize;
             this.tileSheet = tileSheet;
+            this.spriteSheet = sprites;
             this.tileMap = new Tile[columns, rows];
 
             for (int y = 0; y < rows; y++)
@@ -37,6 +39,8 @@ namespace PacMan
             height = rows;
 
             GhostSpawns = new List<Tile>();
+
+            FilePath = filePath;
         }
 
         public Tile[,] TileMap
@@ -44,7 +48,7 @@ namespace PacMan
             get { return this.tileMap; }
         }
 
-        public bool NeedsReset
+        public string FilePath
         {
             get;
             set;
@@ -86,14 +90,13 @@ namespace PacMan
             get;
         }
 
-        public static Level CreateLevel(SpriteSheet spritesheet,SpriteSheet sprites, int width, int height, int tileSize)
+        public void reset()
         {
-            return new Level(spritesheet, sprites, width, height, tileSize);
+            LoadLevel(tileSheet, spriteSheet, FilePath);
         }
 
         public static Level LoadLevel(SpriteSheet spritesheet,SpriteSheet sprites, string filePath)
         {
-
             StreamReader reader = new StreamReader(filePath);
             int x = 0;
             int y = 0;
@@ -101,7 +104,7 @@ namespace PacMan
             int height = int.Parse(reader.ReadLine());
             int tileSize = int.Parse(reader.ReadLine());
 
-            Level level = new Level(spritesheet,sprites, width, height, tileSize);
+            Level level = new Level(spritesheet,sprites, width, height, tileSize, filePath);
 
             level.tileMap = new Tile[width, height];
             

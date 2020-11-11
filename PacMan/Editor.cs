@@ -87,15 +87,6 @@ namespace PacMan
             set;
         }
 
-        public Level CreateNewLevel(string filePath, int columns, int rows, int tileSize)
-        {
-            Level level = Level.CreateLevel(tilesheet,spritesheet, columns, rows, tileSize);
-            this.levelPosition = new Vector2((window.ClientBounds.Width / 2) - (level.PixelWidth / 2), (window.ClientBounds.Height / 2) - (level.PixelHeight / 2));
-            this.currentLevel = level;
-
-            return currentLevel;
-        }
-
         public void SetLevel(Level level)
         {
             this.levelPosition = new Vector2((window.ClientBounds.Width / 2) - (level.PixelWidth / 2), (window.ClientBounds.Height / 2) - (level.PixelHeight / 2));
