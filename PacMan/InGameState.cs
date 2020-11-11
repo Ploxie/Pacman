@@ -118,14 +118,18 @@ namespace PacMan
                 pacman.Score += currentLevel.GetAt(pacman.Position).Powerup.Score;
                 
 
-
                 switch (currentTile.Powerup.Type)
                 {
                     case PowerUpType.WallEater:
                         pacman.ActivatePowerup(currentTile.Powerup);
+                        hud.AddGainedScore(new GainedScore(currentTile, currentLevel.GetAt(pacman.Position).Powerup.Score, 1000));
                         break;
                     case PowerUpType.GhostEater:
                         pacman.ActivatePowerup(currentTile.Powerup);
+                        hud.AddGainedScore(new GainedScore(currentTile, currentLevel.GetAt(pacman.Position).Powerup.Score, 1000));
+                        break;
+                    case PowerUpType.BigFood:
+                        hud.AddGainedScore(new GainedScore(currentTile, currentLevel.GetAt(pacman.Position).Powerup.Score, 1000));
                         break;
                     default:
                         break;
@@ -143,12 +147,14 @@ namespace PacMan
                 {
                     ghost.Dead = true;
                     pacman.Score += 200;
+                    hud.AddGainedScore(new GainedScore(currentTile, 200, 1000));
                 }
             }
         }
 
         public void Update(GameTime gameTime)
         {
+            hud.Update(gameTime);
             if (currentLevel.NeedsReset && pacman != null)
             {
                 ResetGhosts();
