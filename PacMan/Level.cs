@@ -181,79 +181,15 @@ namespace PacMan
                         bottomBlocked = false;
                     }
 
-                    if(leftBlocked && rightBlocked && topBlocked && bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(0, 0);
-                    }
-                    if (!leftBlocked && rightBlocked && topBlocked && bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(0, 1);
-                    }
-                    if (leftBlocked && !rightBlocked && topBlocked && bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(1, 0);
-                    }
-                    if (leftBlocked && rightBlocked && !topBlocked && bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(2, 0);
-                    }
-                    if (leftBlocked && rightBlocked && topBlocked && !bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(0, 2);
-                    }
+                    int xBlock = 0;
+                    xBlock += !rightBlocked ? 1 : 0;
+                    xBlock += !topBlocked ? 2 : 0;
 
-                    if (!leftBlocked && !rightBlocked && topBlocked && bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(1, 1);
-                    }
-                    if (leftBlocked && rightBlocked && !topBlocked && !bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(2, 2);
-                    }
+                    int yBlock = 0;
+                    yBlock += !leftBlocked ? 1 : 0;
+                    yBlock += !bottomBlocked ? 2 : 0;
 
-                    if (!leftBlocked && rightBlocked && !topBlocked && bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(2, 1);
-                    }
-
-                    if (leftBlocked && !rightBlocked && topBlocked && !bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(1, 2);
-                    }
-
-                    if (!leftBlocked && rightBlocked && topBlocked && !bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(0, 3);
-                    }
-
-                    if (leftBlocked && !rightBlocked && !topBlocked && bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(3, 0);
-                    }
-
-                    if (!leftBlocked && !rightBlocked && !topBlocked && !bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(3, 3);
-                    }
-
-                    if (!leftBlocked && !rightBlocked && !topBlocked && bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(3, 1);
-                    }
-
-                    if (!leftBlocked && !rightBlocked && topBlocked && !bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(1, 3);
-                    }
-
-                    if (leftBlocked && !rightBlocked && !topBlocked && !bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(3, 2);
-                    }
-                    if (!leftBlocked && rightBlocked && !topBlocked && !bottomBlocked)
-                    {
-                        tileMap[x, y].Sprite = tileSheet.GetAt(2, 3);
-                    }
+                    tileMap[x, y].Sprite = tileSheet.GetAt(xBlock, yBlock);                    
                 }
             }
         }
