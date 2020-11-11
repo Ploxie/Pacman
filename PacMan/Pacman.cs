@@ -48,7 +48,7 @@ namespace PacMan
         public void ActivatePowerup(Powerup powerup)
         {
             this.activedPowerupType = powerup.Type;
-            powerupTimer = 5000;
+            powerupTimer = 8000;
         }
 
         private void UpdatePowerup(GameTime gameTime)

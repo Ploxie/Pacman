@@ -25,6 +25,7 @@ namespace PacMan
             this.behaviour.Ghost = this;
             this.runBehaviour = new GhostRunAwayBehaviour(pacman, level);
             this.runBehaviour.Ghost = this;
+            this.speed = 2;
 
             this.defaultSpriteSheet = spriteSheet;
             this.runSpriteSheet = runSpriteSheet;
