@@ -111,7 +111,7 @@ namespace PacMan
 
         public void MenuBaseUpdate(GameTime gameTime) 
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Down) && clickTimer <= 0)
+            if ((Keyboard.GetState().IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed) && clickTimer <= 0)
             {
                 if (CurrentOption == Option.StartGame)
                 {
@@ -127,7 +127,7 @@ namespace PacMan
                 }
                 clickTimer = 100;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Up) && clickTimer <= 0)
+            if ((Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed) && clickTimer <= 0)
             {
                 if (CurrentOption == Option.StartGame)
                 {
@@ -143,7 +143,7 @@ namespace PacMan
                 }
                 clickTimer = 100;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter) && clickTimer <= 0)
+            if ((Keyboard.GetState().IsKeyDown(Keys.Enter) || GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed) && clickTimer <= 0)
             {
                 if (CurrentOption == Option.StartGame)
                 {
@@ -164,7 +164,7 @@ namespace PacMan
 
         public void GameOverUpdate(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Down) || Keyboard.GetState().IsKeyDown(Keys.Up) && clickTimer <= 0)
+            if ((Keyboard.GetState().IsKeyDown(Keys.Down) || Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed) && clickTimer <= 0)
             {
                 if (CurrentOption == Option.EndGame)
                 {
@@ -176,7 +176,7 @@ namespace PacMan
                 }
                 clickTimer = 100;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter) && clickTimer <= 0)
+            if ((Keyboard.GetState().IsKeyDown(Keys.Enter) || GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed) && clickTimer <= 0)
             {
                 if (CurrentOption == Option.RestartGame)
                 {
