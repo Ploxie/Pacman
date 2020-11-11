@@ -39,6 +39,14 @@ namespace PacMan
             get { return this.position; }
         }
 
+        public int Size
+        {
+            get
+            {
+                return size;
+            }
+        }
+
         public Rectangle Bounds
         {
             get { return new Rectangle((int)position.X, (int)position.Y, size, size); }

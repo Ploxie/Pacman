@@ -125,10 +125,10 @@ namespace PacMan
 
                     Powerup powerup = null;
                     level.tileMap[x, y] = new Tile(blocked, null, new Vector2(x, y) * tileSize, tileSize);
-                    powerup = food ? new Powerup(PowerUpType.Food, sprites.GetAt(3, 0), 100) : powerup;
-                    powerup = bigFood ? new Powerup(PowerUpType.BigFood, sprites.GetAt(4, 0), 200) : powerup;
-                    powerup = powerupGhost ? new Powerup(PowerUpType.GhostEater, sprites.GetAt(0, 6), 100) : powerup;
-                    powerup = powerupWall ? new Powerup(PowerUpType.WallEater, sprites.GetAt(1, 6), 100) : powerup;
+                    powerup = food ? new Powerup(PowerUpType.Food, sprites.GetAt(3, 0), 50) : powerup;
+                    powerup = bigFood ? new Powerup(PowerUpType.BigFood, sprites.GetAt(4, 0), 100) : powerup;
+                    powerup = powerupGhost ? new Powerup(PowerUpType.GhostEater, sprites.GetAt(0, 6), 500) : powerup;
+                    powerup = powerupWall ? new Powerup(PowerUpType.WallEater, sprites.GetAt(1, 6), 500) : powerup;
                     level.tileMap[x, y].Powerup = powerup;
 
                     level.PacmanSpawn = pacspawn ? level.tileMap[x, y] : level.PacmanSpawn;

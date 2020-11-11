@@ -91,26 +91,21 @@ namespace PacMan
 
         public override void Update(GameTime gameTime)
         {           
-            if(Keyboard.GetState().IsKeyDown(Keys.W))
+            if(Keyboard.GetState().IsKeyDown(Keys.W) || GamePad.GetState(PlayerIndex.One).DPad.Up == ButtonState.Pressed)
             {
                 preferredDirection = new Vector2(0, -1);
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
+            if (Keyboard.GetState().IsKeyDown(Keys.A) || GamePad.GetState(PlayerIndex.One).DPad.Left == ButtonState.Pressed)
             {
                 preferredDirection = new Vector2(-1, 0);
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
+            if (Keyboard.GetState().IsKeyDown(Keys.S) || GamePad.GetState(PlayerIndex.One).DPad.Down == ButtonState.Pressed)
             {
                 preferredDirection = new Vector2(0, 1);
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
+            if (Keyboard.GetState().IsKeyDown(Keys.D) || GamePad.GetState(PlayerIndex.One).DPad.Right == ButtonState.Pressed)
             {
                 preferredDirection = new Vector2(1, 0);
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
-            {
-                ActivatePowerup(new Powerup(PowerUpType.WallEater, null, 100));
             }
 
             ChangeDirection(preferredDirection);

@@ -6,6 +6,35 @@ using System.Text;
 
 namespace PacMan
 {
+    public class GainedScore
+    {
+
+        public GainedScore(Tile tile, int score, double timer)
+        {
+            this.Tile = tile;
+            this.Score = score;
+            this.Timer = timer;
+        }
+
+        public Tile Tile
+        {
+            get;
+            private set;
+        }
+
+        public int Score
+        {
+            get;
+            private set;
+        }
+
+        public double Timer
+        {
+            get;
+            set;
+        }
+    }
+
     public class HUD
     {
 
@@ -16,7 +45,11 @@ namespace PacMan
         private SpriteSheet scoresheet;
         private Sprite lifeSprite;
 
-        public HUD(GameWindow window, int topHeight, int bottomHeight, Texture2D numberTexture, Sprite lifeSprite)
+        private List<GainedScore> gainedScores = new List<GainedScore>();
+
+        private int highscore;
+
+        public HUD(GameWindow window, int topHeight, int bottomHeight, Texture2D numberTexture, Sprite lifeSprite, int highscore)
         {
             this.window = window;
             this.topHeight = topHeight;
@@ -28,6 +61,7 @@ namespace PacMan
             this.scoresheet = new SpriteSheet(numberTexture, new Vector2(132, 1), new Vector2(35, 14), new Vector2(7, 7));
 
             this.lifeSprite = lifeSprite;
+            this.highscore = highscore;
         }
 
         public Level CurrentLevel
@@ -47,6 +81,19 @@ namespace PacMan
             get;
         }
 
+        public int Highscore
+        {
+            get
+            {
+                return highscore > Pacman.Score ? highscore : Pacman.Score;
+            }
+        }
+
+        public void AddGainedScore(GainedScore gainedScore)
+        {
+            this.gainedScores.Add(gainedScore);
+        }
+        
         private Sprite GetNumberSprite(int number)
         {
             if (number <= 0 || number > 9)
@@ -60,10 +107,11 @@ namespace PacMan
             return scoresheet.GetAt(x, y);
         }
 
-        public void DrawScore(SpriteBatch spriteBatch, int score, Vector2 position, Vector2 scale, Color? color = null)
+        public void DrawScore(SpriteBatch spriteBatch, int score, Vector2 position, Vector2 scale, Color? color = null, int numbers = 6)
         {
             string valueString = score.ToString();
-            int[] valueNumbers = new int[6];
+            numbers = Math.Max(valueString.Length, numbers);
+            int[] valueNumbers = new int[numbers];
 
             int numberIndex = valueString.Length - 1;
             for (int i = valueNumbers.Length - 1; i >= valueNumbers.Length - valueString.Length; i--)
@@ -72,7 +120,7 @@ namespace PacMan
                 valueNumbers[i] = (int)Char.GetNumericValue(c);
             }
 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < numbers; i++)
             {
                 Sprite sprite = GetNumberSprite(valueNumbers[i]);
                 int size = (int)(sprite.SpriteSize.X * scale.X) + 1;
@@ -91,11 +139,22 @@ namespace PacMan
             }
         }
 
-        public void DrawGainedScore(SpriteBatch spriteBatch, int score, Vector2 scale, Vector2 position)
+        public void DrawGainedScore(SpriteBatch spriteBatch, int score, Vector2 scale, Vector2 position, int numbers = 6)
         {
-            DrawScore(spriteBatch, score, position, scale);
+            DrawScore(spriteBatch, score, position, scale, null, numbers);
         }
         
+        public void Update(GameTime gameTime)
+        {
+            for(int i = gainedScores.Count - 1; i >= 0;i--)
+            {
+                gainedScores[i].Timer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+                if(gainedScores[i].Timer <= 0)
+                {
+                    gainedScores.RemoveAt(i);
+                }
+            }
+        }
         public void Draw(SpriteBatch spriteBatch)
         {
 
@@ -108,7 +167,7 @@ namespace PacMan
             float scoreWidth = 6.0f * 7.0f * uiScale + 6.0f;
             float scoreHeight = 7.0f * uiScale;
             Vector2 highscorePosition = new Vector2(topHalfPosition.X + (HighscoreSprite.SpriteSize.X * uiScale) - scoreWidth, topHalfPosition.Y + ((HighscoreSprite.SpriteSize.Y * uiScale)) + 10);
-            DrawScore(spriteBatch, 1337, highscorePosition, new Vector2(uiScale));
+            DrawScore(spriteBatch, Highscore, highscorePosition, new Vector2(uiScale));
 
             Vector2 scorePosition = new Vector2(scoreWidth, highscorePosition.Y);
             DrawScore(spriteBatch, Pacman.Score, scorePosition, new Vector2(uiScale));
@@ -116,6 +175,15 @@ namespace PacMan
 
             Rectangle bottomRectangle = new Rectangle(0, window.ClientBounds.Height - bottomHeight, window.ClientBounds.Width, bottomHeight);
             DrawLives(spriteBatch, Pacman.Lives, new Vector2(bottomRectangle.X, bottomRectangle.Y) + new Vector2(14,(bottomRectangle.Height/2) - ((lifeSprite.SpriteSize.Y * uiScale) / 2)), new Vector2(uiScale));
+        
+            foreach(GainedScore gainedScore in gainedScores)
+            {
+                string scoreString = gainedScore.Score.ToString();
+                float gainedScoreWidth = scoreString.Length * 7.0f * Game1.Scale.X + scoreString.Length;
+                float gainedScoreHeight = 7.0f * Game1.Scale.X;
+                Vector2 position = new Vector2(0, topRectangle.Height) + gainedScore.Tile.Position + (new Vector2(gainedScore.Tile.Size) * 0.5f)- (new Vector2(gainedScoreWidth, gainedScoreHeight) * 0.5f);
+                DrawGainedScore(spriteBatch, gainedScore.Score, Game1.Scale, position, 0);
+            }
         }
 
     }
