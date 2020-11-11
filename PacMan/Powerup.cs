@@ -11,7 +11,8 @@ namespace PacMan
         Food,
         BigFood,
         WallEater, 
-        GhostEater, 
+        GhostEater,
+        Empty,
     }
 
     public class Powerup

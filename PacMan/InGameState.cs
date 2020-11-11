@@ -30,7 +30,32 @@ namespace PacMan
             this.characterSheet = characterSheet;
         }
 
-        
+        public bool FoodCollected
+        {
+            get
+            {
+                foreach (Tile tile in currentLevel.TileMap)
+                {
+                    if (tile.Powerup == null)
+                    {
+                        continue;
+                    }
+                    if (tile.Powerup.Type == PowerUpType.Food || tile.Powerup.Type == PowerUpType.BigFood)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+        public void ResetGhosts()
+        {
+            foreach (Ghost ghost in ghosts)
+            {
+                ghost.Position = currentLevel.GhostSpawns[Game1.random.Next(currentLevel.GhostSpawns.Count)].Position;
+            }
+        }
 
         public void SetLevel(Level level)
         {
@@ -124,6 +149,14 @@ namespace PacMan
 
         public void Update(GameTime gameTime)
         {
+            if (currentLevel.NeedsReset && pacman != null)
+            {
+                ResetGhosts();
+                pacman.Lives = 3;
+                int tileSize = currentLevel.TileSize;
+                pacman.Position = currentLevel.PacmanSpawn.Position + new Vector2(tileSize / 2, tileSize / 2);
+            }
+
             if (pacman != null)
             {
                 pacman.Update(gameTime);
@@ -135,6 +168,8 @@ namespace PacMan
             }
 
             Collision();
+
+            
         }
 
         public void Draw(SpriteBatch spriteBatch)

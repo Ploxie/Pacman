@@ -244,6 +244,7 @@ namespace PacMan
                 gameState = editor;
                 menu.Editor = false;
             }
+            
 
             KeyboardState keyboardState = Keyboard.GetState();
 
@@ -267,14 +268,32 @@ namespace PacMan
 
 
             gameState.Update(gameTime);
+            if (hud.CurrentLevel.NeedsReset)
+            {
+                gameState = game;
+                menu.WinScreen = false;
+            }
 
-            if(hud.Pacman.Lives <= 0 && !savedHighscores)
+            if (game.FoodCollected && !savedHighscores)
+            {
+                menu.WinScreen = true;
+                highscores.Add(hud.Pacman.Score);
+                highscores.Sort((o0, o1) => o1 - o0);
+                menu.Highscores = highscores;
+                SaveHighscores();
+                gameState = menu;
+                menu.CurrentOption = MenuGameState.Option.RestartGame;
+                savedHighscores = true;
+            }
+
+            if (hud.Pacman.Lives <= 0 && !savedHighscores)
             {
                 highscores.Add(hud.Pacman.Score);
                 highscores.Sort((o0, o1) => o1 - o0);
                 menu.Highscores = highscores;
                 SaveHighscores();
                 gameState = menu;
+                menu.CurrentOption = MenuGameState.Option.RestartGame;
                 savedHighscores = true;
             }
             

@@ -44,6 +44,12 @@ namespace PacMan
             get { return this.tileMap; }
         }
 
+        public bool NeedsReset
+        {
+            get;
+            set;
+        }
+
         public int Width
         {
             get { return width; }

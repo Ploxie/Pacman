@@ -13,6 +13,9 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Highscores.txt
+/copy:Highscores.txt
+
 #begin Level1.txt
 /copy:Level1.txt
 
