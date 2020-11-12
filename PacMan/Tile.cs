@@ -34,29 +34,16 @@ namespace PacMan
             set { this.sprite = value; }
         }
 
-        public Vector2 Position
-        {
-            get { return this.position; }
-        }
+        public Vector2 Position => position;
 
-        public int Size
-        {
-            get
-            {
-                return size;
-            }
-        }
+        public int Size => size;
 
-        public Rectangle Bounds
-        {
-            get { return new Rectangle((int)position.X, (int)position.Y, size, size); }
-        }
+        public Rectangle Bounds => new Rectangle((int)position.X, (int)position.Y, size, size);
 
         public Powerup? Powerup
         {
             get;
             set;
         }
-        
     }
 }

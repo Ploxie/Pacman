@@ -21,8 +21,6 @@ namespace PacMan
             GhostSpawn,
         }
 
-        private SpriteSheet tilesheet;
-        private SpriteSheet spritesheet;
         private GameWindow window;
 
         private Level currentLevel;
@@ -32,10 +30,8 @@ namespace PacMan
         
         private Vector2 levelPosition;
 
-        public Editor(SpriteSheet tilesheet, SpriteSheet spritesheet, GameWindow window)
+        public Editor(GameWindow window)
         {
-            this.tilesheet = tilesheet;
-            this.spritesheet = spritesheet;
             this.window = window;     
         }
 

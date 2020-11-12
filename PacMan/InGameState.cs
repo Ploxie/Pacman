@@ -10,7 +10,6 @@ namespace PacMan
     public class InGameState : GameState
     {
         private GameWindow window;
-        private SpriteSheet tilesheet;
         private SpriteSheet characterSheet;
 
         private Vector2 levelPosition;
@@ -20,13 +19,11 @@ namespace PacMan
         private Pacman pacman;
 
         private List<Ghost> ghosts = new List<Ghost>();
-        private List<Powerup> powerups = new List<Powerup>();
 
-        public InGameState(GameWindow window, HUD hud, SpriteSheet tilesheet, SpriteSheet characterSheet)
+        public InGameState(GameWindow window, HUD hud, SpriteSheet characterSheet)
         {
             this.window = window;
             this.hud = hud;
-            this.tilesheet = tilesheet;
             this.characterSheet = characterSheet;
 
         }

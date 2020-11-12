@@ -92,10 +92,10 @@ namespace PacMan
             Sprite lifeSprite = spritesheet.GetAt(1, 0);
             hud = new HUD(Window, hudTop, hudBot, scoreTexture, lifeSprite, highscore);
             
-            game = new InGameState(Window, hud, tilesheet, spritesheet);
+            game = new InGameState(Window, hud, spritesheet);
             game.SetLevel(level);
                                    
-            editor = new Editor(tilesheet,spritesheet, Window);
+            editor = new Editor(Window);
             editor.SetLevel(level);
             editor.GridTexture = CreateRectangleTexture(32, 32, new Color(128, 128, 128, 128));
             editor.HighlightTexture = CreateFilledTexture(32, 32, new Color(128,128,128,128));
@@ -107,7 +107,6 @@ namespace PacMan
             editor.GhostSpawnSprite = spritesheet.GetAt(0, 1);
 
             menu = new MenuGameState(hud, pacmanBackgroundTexture, pacmanWinScreen, pacmanLoseScreen, menuFont, Window);
-
             menu.Highscores = highscores;
 
             gameState = menu;            

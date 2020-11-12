@@ -14,16 +14,14 @@ namespace PacMan
 
         private Tile[,] tileMap;
         private SpriteSheet tileSheet;
-        private SpriteSheet spriteSheet;
 
         private int width, height;
         private int tileSize;
                 
-        private Level(SpriteSheet tileSheet, SpriteSheet sprites, int columns, int rows, int tileSize, string filePath)
+        private Level(SpriteSheet tileSheet, int columns, int rows, int tileSize, string filePath)
         {
             this.tileSize = tileSize;
             this.tileSheet = tileSheet;
-            this.spriteSheet = sprites;
             this.tileMap = new Tile[columns, rows];
 
             for (int y = 0; y < rows; y++)
@@ -90,11 +88,6 @@ namespace PacMan
             get;
         }
 
-        public void reset()
-        {
-            LoadLevel(tileSheet, spriteSheet, FilePath);
-        }
-
         public static Level LoadLevel(SpriteSheet spritesheet,SpriteSheet sprites, string filePath)
         {
             StreamReader reader = new StreamReader(filePath);
@@ -104,7 +97,7 @@ namespace PacMan
             int height = int.Parse(reader.ReadLine());
             int tileSize = int.Parse(reader.ReadLine());
 
-            Level level = new Level(spritesheet,sprites, width, height, tileSize, filePath);
+            Level level = new Level(spritesheet, width, height, tileSize, filePath);
 
             level.tileMap = new Tile[width, height];
             
@@ -205,7 +198,7 @@ namespace PacMan
             }
             if(x >= width)
             {
-                x = x % width;
+                x %= width;
             }
             if(y < 0)
             {
@@ -213,7 +206,7 @@ namespace PacMan
             }
             if(y >= height)
             {
-                y = y % height;
+                y %= height;
             }
 
             return tileMap[x, y];

@@ -17,17 +17,13 @@ namespace PacMan.GhostBehaviours
         public override Vector2 CalculateDirection()
         {
             int Dir = Game1.random.Next(0, 4);
-            switch (Dir)
+            return Dir switch
             {
-                case 0:
-                    return new Vector2(0, -1);
-                case 1:
-                    return new Vector2(0, 1);
-                case 2:
-                    return new Vector2(1, 0);
-                default:
-                    return new Vector2(-1, 0);
-            }
+                0 => new Vector2(0, -1),
+                1 => new Vector2(0, 1),
+                2 => new Vector2(1, 0),
+                _ => new Vector2(-1, 0),
+            };
         }
 
     }
